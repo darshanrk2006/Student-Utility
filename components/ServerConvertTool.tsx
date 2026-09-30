@@ -32,6 +32,9 @@ import {
   Filter,
   CheckCheck,
   RotateCcw,
+  BookOpen,
+  Code,
+  Database,
 } from "lucide-react";
 
 export interface FormatMeta {
@@ -39,7 +42,7 @@ export interface FormatMeta {
   name: string;
   shortName: string;
   ext: string;
-  category: "doc" | "pdf" | "slides" | "sheet" | "image" | "apple" | "text";
+  category: "doc" | "pdf" | "slides" | "sheet" | "image" | "apple" | "text" | "ebook";
   categoryLabel: string;
   color: string;
   bgLight: string;
@@ -102,6 +105,60 @@ export const ALL_FORMATS: FormatMeta[] = [
     iconName: "FileText",
     desc: "LibreOffice & OpenOffice standard text",
   },
+  {
+    id: "html",
+    name: "HTML Webpage (.html)",
+    shortName: "HTML (.html)",
+    ext: "html",
+    category: "doc",
+    categoryLabel: "Document",
+    color: "text-orange-600 dark:text-orange-400",
+    bgLight: "bg-orange-50",
+    bgDark: "dark:bg-orange-950/60",
+    iconName: "Code",
+    desc: "Standard hypertext webpage markup",
+  },
+  {
+    id: "md",
+    name: "Markdown Document (.md)",
+    shortName: "Markdown (.md)",
+    ext: "md",
+    category: "doc",
+    categoryLabel: "Document",
+    color: "text-slate-700 dark:text-slate-300",
+    bgLight: "bg-slate-100",
+    bgDark: "dark:bg-slate-800",
+    iconName: "FileText",
+    desc: "Formatted Markdown documentation notes",
+  },
+
+  // E-Books
+  {
+    id: "epub",
+    name: "EPUB E-Book (.epub)",
+    shortName: "EPUB E-Book",
+    ext: "epub",
+    category: "ebook",
+    categoryLabel: "E-Book",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgLight: "bg-emerald-50",
+    bgDark: "dark:bg-emerald-950/60",
+    iconName: "BookOpen",
+    desc: "Universal open electronic book format",
+  },
+  {
+    id: "mobi",
+    name: "MOBI E-Book (.mobi)",
+    shortName: "MOBI E-Book",
+    ext: "mobi",
+    category: "ebook",
+    categoryLabel: "E-Book",
+    color: "text-amber-600 dark:text-amber-400",
+    bgLight: "bg-amber-50",
+    bgDark: "dark:bg-amber-950/60",
+    iconName: "BookOpen",
+    desc: "Amazon Kindle legacy e-book format",
+  },
 
   // PDF
   {
@@ -156,7 +213,20 @@ export const ALL_FORMATS: FormatMeta[] = [
     bgLight: "bg-amber-50",
     bgDark: "dark:bg-amber-950/60",
     iconName: "Presentation",
-    desc: "LibreOffice Impress slides",
+    desc: "LibreOffice Impress presentation slides",
+  },
+  {
+    id: "key",
+    name: "Apple Keynote (.key)",
+    shortName: "Apple Keynote",
+    ext: "key",
+    category: "apple",
+    categoryLabel: "Apple",
+    color: "text-purple-600 dark:text-purple-400",
+    bgLight: "bg-purple-50",
+    bgDark: "dark:bg-purple-950/60",
+    iconName: "Presentation",
+    desc: "Apple macOS Keynote presentation",
   },
 
   // Spreadsheets
@@ -211,6 +281,32 @@ export const ALL_FORMATS: FormatMeta[] = [
     bgDark: "dark:bg-emerald-950/60",
     iconName: "Sheet",
     desc: "LibreOffice Calc spreadsheet",
+  },
+  {
+    id: "numbers",
+    name: "Apple Numbers (.numbers)",
+    shortName: "Apple Numbers",
+    ext: "numbers",
+    category: "apple",
+    categoryLabel: "Apple",
+    color: "text-purple-600 dark:text-purple-400",
+    bgLight: "bg-purple-50",
+    bgDark: "dark:bg-purple-950/60",
+    iconName: "Sheet",
+    desc: "Apple macOS Numbers spreadsheet",
+  },
+  {
+    id: "tsv",
+    name: "TSV Table (.tsv)",
+    shortName: "TSV Table",
+    ext: "tsv",
+    category: "sheet",
+    categoryLabel: "Spreadsheet",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgLight: "bg-emerald-50",
+    bgDark: "dark:bg-emerald-950/60",
+    iconName: "Sheet",
+    desc: "Tab-Separated Values tabular data",
   },
 
   // Apple Pages
@@ -268,8 +364,86 @@ export const ALL_FORMATS: FormatMeta[] = [
     iconName: "ImageIcon",
     desc: "Modern high-efficiency web image",
   },
+  {
+    id: "gif",
+    name: "GIF Image (.gif)",
+    shortName: "GIF Image",
+    ext: "gif",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-pink-600 dark:text-pink-400",
+    bgLight: "bg-pink-50",
+    bgDark: "dark:bg-pink-950/60",
+    iconName: "ImageIcon",
+    desc: "Animated or static Graphics Interchange Format",
+  },
+  {
+    id: "svg",
+    name: "SVG Vector (.svg)",
+    shortName: "SVG Vector",
+    ext: "svg",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-indigo-600 dark:text-indigo-400",
+    bgLight: "bg-indigo-50",
+    bgDark: "dark:bg-indigo-950/60",
+    iconName: "Code",
+    desc: "Scalable Vector Graphic for crisp rendering",
+  },
+  {
+    id: "bmp",
+    name: "Bitmap Image (.bmp)",
+    shortName: "Bitmap (.bmp)",
+    ext: "bmp",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-slate-600 dark:text-slate-400",
+    bgLight: "bg-slate-100",
+    bgDark: "dark:bg-slate-800",
+    iconName: "ImageIcon",
+    desc: "Uncompressed Windows Bitmap image",
+  },
+  {
+    id: "tiff",
+    name: "TIFF Image (.tiff)",
+    shortName: "TIFF Image",
+    ext: "tiff",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-slate-600 dark:text-slate-400",
+    bgLight: "bg-slate-100",
+    bgDark: "dark:bg-slate-800",
+    iconName: "ImageIcon",
+    desc: "High-quality print & scanning image",
+  },
+  {
+    id: "heic",
+    name: "Apple HEIC (.heic)",
+    shortName: "Apple HEIC",
+    ext: "heic",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-purple-600 dark:text-purple-400",
+    bgLight: "bg-purple-50",
+    bgDark: "dark:bg-purple-950/60",
+    iconName: "Apple",
+    desc: "High Efficiency Image Container from iPhone",
+  },
+  {
+    id: "ico",
+    name: "Icon File (.ico)",
+    shortName: "Icon (.ico)",
+    ext: "ico",
+    category: "image",
+    categoryLabel: "Image",
+    color: "text-cyan-600 dark:text-cyan-400",
+    bgLight: "bg-cyan-50",
+    bgDark: "dark:bg-cyan-950/60",
+    iconName: "ImageIcon",
+    desc: "Website favicon and desktop icon file",
+  },
 
-  // Text
+  // Text & Data
   {
     id: "txt",
     name: "Plain Text (.txt)",
@@ -283,27 +457,83 @@ export const ALL_FORMATS: FormatMeta[] = [
     iconName: "FileCode",
     desc: "Standard raw text without formatting",
   },
+  {
+    id: "json",
+    name: "JSON Data (.json)",
+    shortName: "JSON Data",
+    ext: "json",
+    category: "text",
+    categoryLabel: "Data",
+    color: "text-amber-600 dark:text-amber-400",
+    bgLight: "bg-amber-50",
+    bgDark: "dark:bg-amber-950/60",
+    iconName: "Database",
+    desc: "JavaScript Object Notation data structure",
+  },
+  {
+    id: "xml",
+    name: "XML Document (.xml)",
+    shortName: "XML Document",
+    ext: "xml",
+    category: "text",
+    categoryLabel: "Data",
+    color: "text-cyan-600 dark:text-cyan-400",
+    bgLight: "bg-cyan-50",
+    bgDark: "dark:bg-cyan-950/60",
+    iconName: "Code",
+    desc: "Extensible Markup Language structured data",
+  },
 ];
 
 export const VALID_TARGETS: Record<string, string[]> = {
-  docx: ["pdf", "txt"],
-  doc: ["pdf", "docx", "txt"],
-  rtf: ["pdf", "docx", "txt"],
-  odt: ["pdf", "docx", "txt"],
-  pdf: ["docx", "png", "jpg", "txt"],
-  pptx: ["pdf"],
-  ppt: ["pdf", "pptx"],
-  odp: ["pdf"],
-  xlsx: ["pdf", "csv"],
-  xls: ["pdf", "xlsx", "csv"],
-  csv: ["pdf", "xlsx"],
-  ods: ["pdf", "xlsx"],
-  pages: ["docx", "pdf", "doc", "txt"],
-  jpg: ["pdf", "png", "webp"],
-  jpeg: ["pdf", "png", "webp"],
-  png: ["pdf", "jpg", "webp"],
-  webp: ["pdf", "jpg", "png"],
-  txt: ["pdf", "docx"],
+  // Documents
+  docx: ["pdf", "txt", "rtf", "odt", "html", "epub", "jpg", "png"],
+  doc: ["docx", "pdf", "txt", "rtf", "odt", "html"],
+  rtf: ["docx", "pdf", "txt", "odt", "html"],
+  odt: ["docx", "pdf", "txt", "rtf", "html"],
+  html: ["pdf", "docx", "txt", "png", "jpg"],
+  md: ["pdf", "docx", "html", "txt"],
+
+  // E-Books
+  epub: ["pdf", "docx", "txt", "mobi"],
+  mobi: ["pdf", "epub", "txt"],
+
+  // PDF
+  pdf: ["docx", "pptx", "xlsx", "png", "jpg", "txt", "html", "epub"],
+
+  // Presentations
+  pptx: ["pdf", "ppt", "odp", "png", "jpg"],
+  ppt: ["pptx", "pdf", "odp", "png"],
+  odp: ["pptx", "pdf", "ppt"],
+  key: ["pdf", "pptx", "png"],
+
+  // Spreadsheets
+  xlsx: ["pdf", "csv", "xls", "ods", "html"],
+  xls: ["xlsx", "pdf", "csv", "ods"],
+  csv: ["xlsx", "pdf", "xls", "tsv"],
+  ods: ["xlsx", "pdf", "csv"],
+  numbers: ["xlsx", "pdf", "csv"],
+  tsv: ["csv", "xlsx", "pdf"],
+
+  // Apple
+  pages: ["docx", "pdf", "doc", "txt", "rtf"],
+
+  // Images
+  jpg: ["png", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
+  jpeg: ["png", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
+  png: ["jpg", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
+  webp: ["png", "jpg", "pdf", "gif", "bmp"],
+  gif: ["png", "jpg", "pdf", "webp"],
+  svg: ["png", "jpg", "pdf", "webp"],
+  bmp: ["png", "jpg", "pdf", "webp"],
+  tiff: ["pdf", "png", "jpg", "webp"],
+  heic: ["jpg", "png", "pdf", "webp"],
+  ico: ["png", "jpg"],
+
+  // Text & Data
+  txt: ["pdf", "docx", "html", "rtf"],
+  json: ["csv", "txt", "xlsx"],
+  xml: ["json", "txt", "csv", "pdf"],
 };
 
 export const QUICK_PRESETS = [
@@ -314,7 +544,9 @@ export const QUICK_PRESETS = [
   { from: "pptx", to: "pdf", label: "PowerPoint ➔ PDF" },
   { from: "xlsx", to: "pdf", label: "Excel ➔ PDF" },
   { from: "jpg", to: "pdf", label: "Images ➔ PDF" },
-  { from: "txt", to: "pdf", label: "Text ➔ PDF" },
+  { from: "epub", to: "pdf", label: "EPUB ➔ PDF" },
+  { from: "md", to: "pdf", label: "Markdown ➔ PDF" },
+  { from: "html", to: "pdf", label: "HTML ➔ PDF" },
 ];
 
 export const CATEGORY_FILTERS = [
@@ -324,8 +556,9 @@ export const CATEGORY_FILTERS = [
   { id: "slides", label: "Presentations" },
   { id: "sheet", label: "Spreadsheets" },
   { id: "image", label: "Images" },
-  { id: "apple", label: "Apple Pages" },
-  { id: "text", label: "Plain Text" },
+  { id: "apple", label: "Apple" },
+  { id: "ebook", label: "E-Books" },
+  { id: "text", label: "Text & Data" },
 ];
 
 function renderFormatIcon(iconName: string, className = "w-4 h-4") {
@@ -344,6 +577,12 @@ function renderFormatIcon(iconName: string, className = "w-4 h-4") {
       return <ImageIcon className={className} />;
     case "FileCode":
       return <FileCode className={className} />;
+    case "BookOpen":
+      return <BookOpen className={className} />;
+    case "Code":
+      return <Code className={className} />;
+    case "Database":
+      return <Database className={className} />;
     default:
       return <FileText className={className} />;
   }
@@ -374,7 +613,7 @@ export function ServerConvertTool({
     category: "convert" as const,
     shortDesc: "Convert between Word, PDF, Excel, PowerPoint, Images, and Text seamlessly.",
     description:
-      "A student-first document converter. Select your uploaded document type and choose your desired target format using the two scrollable containers below.",
+      "A student-first document converter. Select your uploaded document type in FROM and choose your desired target format in TO using the matrix below.",
     iconName: "ArrowLeftRight",
     badge: "Fast Cloud Convert",
     badgeType: "cloud" as const,
@@ -382,18 +621,18 @@ export function ServerConvertTool({
     tags: ["document converter", "word to pdf", "pdf to word", "file transfer", "converter hub"],
     features: [
       "Select custom source format and target format dynamically",
-      "Converts Word, PDF, PowerPoint, Excel, Images, and Text",
+      "Converts Word, PDF, PowerPoint, Excel, Images, E-Books, and Text",
       "Immediate memory processing & auto-deletion guarantee",
     ],
     steps: [
-      { step: 1, title: "Select Document Format", desc: "Pick your uploaded document format in Container 1." },
-      { step: 2, title: "Pick Target Format", desc: "Select the desired output format in Container 2." },
+      { step: 1, title: "Select Source Format", desc: "Pick your uploaded document format in FROM." },
+      { step: 2, title: "Pick Target Format", desc: "Select the desired output format in TO." },
       { step: 3, title: "Upload & Convert", desc: "Drop your file and download the converted output." },
     ],
     faqs: [
       {
-        q: "How do the two containers work?",
-        a: "Container 1 specifies the format of the file you are uploading. Container 2 displays all compatible target formats you can transfer it into. Click or scroll through any format to select it!",
+        q: "How does format selection work?",
+        a: "FROM specifies the format of the file you are uploading. TO displays all compatible target formats you can transfer it into. Click or scroll through any format to select it!",
       },
     ],
   };
@@ -402,7 +641,7 @@ export function ServerConvertTool({
   const [fromFormat, setFromFormat] = useState<string>(defaultFromFormat);
   const [toFormat, setToFormat] = useState<string>(defaultToFormat);
 
-  // Filter state for Container 1 (FROM)
+  // Filter state for FROM
   const [fromCategory, setFromCategory] = useState<string>("all");
   const [fromSearch, setFromSearch] = useState<string>("");
 
@@ -417,6 +656,8 @@ export function ServerConvertTool({
   const detectFormat = (filename: string): string => {
     const ext = filename.split(".").pop()?.toLowerCase() || "";
     if (ext === "jpeg") return "jpg";
+    if (ext === "htm") return "html";
+    if (ext === "tif") return "tiff";
     if (VALID_TARGETS[ext]) return ext;
     return defaultFromFormat;
   };
@@ -488,7 +729,7 @@ export function ServerConvertTool({
   }, [fromFormat]);
 
   const fromMeta = ALL_FORMATS.find((f) => f.id === fromFormat) || ALL_FORMATS[0];
-  const toMeta = ALL_FORMATS.find((f) => f.id === toFormat) || ALL_FORMATS[4] || {
+  const toMeta = ALL_FORMATS.find((f) => f.id === toFormat) || ALL_FORMATS[8] || {
     id: toFormat,
     name: `${toFormat.toUpperCase()} Document`,
     shortName: toFormat.toUpperCase(),
@@ -579,7 +820,7 @@ export function ServerConvertTool({
             </span>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-4 md:grid-cols-8 gap-2">
+          <div className="grid grid-cols-2 sm:grid-cols-5 md:grid-cols-10 gap-2">
             {QUICK_PRESETS.map((p) => {
               const isSelected = fromFormat === p.from && toFormat === p.to;
               return (
@@ -600,25 +841,25 @@ export function ServerConvertTool({
           </div>
         </div>
 
-        {/* The 2 Scrollable Selection Containers: CONTAINER 1 (FROM) & CONTAINER 2 (TO) */}
+        {/* The 2 Scrollable Selection Containers: FROM & TO */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-5 sm:p-7 shadow-sm space-y-5">
           <div className="text-center max-w-xl mx-auto space-y-1">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 dark:bg-indigo-950/60 text-indigo-700 dark:text-indigo-300 text-xs font-semibold border border-indigo-200/60 dark:border-indigo-800/60">
               <ArrowLeftRight className="w-3.5 h-3.5" />
-              Dual-Container Universal Matrix
+              Universal Conversion Matrix
             </div>
             <h3 className="text-lg sm:text-xl font-extrabold text-slate-900 dark:text-slate-100">
               Select Source & Target Formats
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400">
-              Choose your uploaded file format in Container 1, and pick your target output in Container 2
+              Select your source format in FROM, and choose your target format in TO
             </p>
           </div>
 
           {/* Side-by-Side Dual Container Grid */}
           <div className="grid grid-cols-1 lg:grid-cols-11 gap-4 items-stretch">
             {/* ========================================================================= */}
-            {/* CONTAINER 1: FROM (Uploaded Document Type) with Scroll Pattern */}
+            {/* FROM (Uploaded Document Type) with Scroll Pattern */}
             {/* ========================================================================= */}
             <div className="lg:col-span-5 rounded-3xl border-2 border-indigo-100 dark:border-indigo-950 bg-slate-50/90 dark:bg-slate-950/90 p-4 sm:p-5 flex flex-col justify-between space-y-3.5 shadow-inner">
               {/* Header */}
@@ -628,8 +869,8 @@ export function ServerConvertTool({
                     1
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
-                      Container 1: FROM
+                    <h4 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                      FROM
                     </h4>
                     <span className="text-[11px] text-slate-500 dark:text-slate-400">
                       Uploaded File Format
@@ -642,7 +883,7 @@ export function ServerConvertTool({
                 </span>
               </div>
 
-              {/* Category Filter Pills for Container 1 */}
+              {/* Category Filter Pills for FROM */}
               <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none text-[11px]">
                 {CATEGORY_FILTERS.map((cat) => {
                   const isActive = fromCategory === cat.id;
@@ -663,14 +904,14 @@ export function ServerConvertTool({
                 })}
               </div>
 
-              {/* Search Bar for Container 1 */}
+              {/* Search Bar for FROM */}
               <div className="relative">
                 <Search className="w-3.5 h-3.5 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
                 <input
                   type="text"
                   value={fromSearch}
                   onChange={(e) => setFromSearch(e.target.value)}
-                  placeholder="Filter formats (e.g. word, ppt, excel, jpg)..."
+                  placeholder="Filter formats (e.g. docx, pdf, epub, heic, csv)..."
                   className="w-full pl-8 pr-3 py-1.5 rounded-xl text-xs bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-slate-100 placeholder-slate-400 focus:outline-none focus:ring-1 focus:ring-indigo-500"
                 />
                 {fromSearch && (
@@ -785,7 +1026,7 @@ export function ServerConvertTool({
             </div>
 
             {/* ========================================================================= */}
-            {/* CONTAINER 2: TO (Target Transfer Format) with Scroll Pattern */}
+            {/* TO (Target Transfer Format) with Scroll Pattern */}
             {/* ========================================================================= */}
             <div className="lg:col-span-5 rounded-3xl border-2 border-teal-100 dark:border-teal-950 bg-teal-50/40 dark:bg-teal-950/20 p-4 sm:p-5 flex flex-col justify-between space-y-3.5 shadow-inner">
               {/* Header */}
@@ -795,8 +1036,8 @@ export function ServerConvertTool({
                     2
                   </div>
                   <div>
-                    <h4 className="text-xs font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
-                      Container 2: TO
+                    <h4 className="text-sm font-black uppercase tracking-wider text-slate-900 dark:text-slate-100">
+                      TO
                     </h4>
                     <span className="text-[11px] text-teal-800 dark:text-teal-300">
                       Target Output Format
@@ -908,7 +1149,7 @@ export function ServerConvertTool({
             onFilesSelected={handleFilesSelected}
             accept={
               accept ||
-              ".docx,.doc,.rtf,.odt,.pdf,.pptx,.ppt,.odp,.xlsx,.xls,.csv,.ods,.pages,.jpg,.jpeg,.png,.webp,.txt"
+              ".docx,.doc,.rtf,.odt,.html,.htm,.md,.epub,.mobi,.pdf,.pptx,.ppt,.odp,.key,.xlsx,.xls,.csv,.ods,.numbers,.tsv,.pages,.jpg,.jpeg,.png,.webp,.gif,.svg,.bmp,.tiff,.tif,.heic,.ico,.txt,.json,.xml"
             }
             title={`Drop your .${fromFormat} document here to convert to .${toFormat}`}
             description={`Upload your file to start instant transfer into ${toMeta.name}`}
