@@ -187,20 +187,17 @@ export default function QrPage() {
             </div>
 
             {/* User-Friendly Color Selectors */}
+            {/* User-Friendly Color Selectors */}
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {/* QR Pattern Color (Foreground) */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <Palette className="w-3.5 h-3.5 text-indigo-500" />
-                    QR Color
-                  </label>
-                  <span className="text-[11px] font-semibold text-slate-400">Pattern</span>
-                </div>
-
-                <label className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all cursor-pointer group shadow-sm">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+                  <Palette className="w-3.5 h-3.5 text-indigo-500" />
+                  QR Color (Foreground)
+                </label>
+                <label className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 transition-all cursor-pointer group shadow-sm">
                   <div
-                    className="w-8 h-8 rounded-lg border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative overflow-hidden"
+                    className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative overflow-hidden"
                     style={{ backgroundColor: colorDark }}
                   >
                     <input
@@ -214,49 +211,20 @@ export default function QrPage() {
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
                       Choose QR Color
                     </span>
-                    <span className="text-[10px] text-slate-400">Tap to open color wheel</span>
+                    <span className="text-[11px] text-slate-400">Click to open color picker</span>
                   </div>
                 </label>
-
-                {/* 1-Tap Quick Swatches */}
-                <div className="flex items-center gap-2 pt-0.5">
-                  {[
-                    { color: "#000000", name: "Black" },
-                    { color: "#312e81", name: "Indigo" },
-                    { color: "#1d4ed8", name: "Blue" },
-                    { color: "#047857", name: "Emerald" },
-                    { color: "#b91c1c", name: "Crimson" },
-                    { color: "#7e22ce", name: "Purple" },
-                  ].map((swatch) => (
-                    <button
-                      key={swatch.color}
-                      type="button"
-                      title={swatch.name}
-                      onClick={() => setColorDark(swatch.color)}
-                      className={`w-6 h-6 rounded-full border transition-all cursor-pointer ${
-                        colorDark.toLowerCase() === swatch.color.toLowerCase()
-                          ? "ring-2 ring-indigo-500 ring-offset-2 dark:ring-offset-slate-900 scale-110 border-white shadow-sm"
-                          : "border-slate-300 dark:border-slate-700 hover:scale-110"
-                      }`}
-                      style={{ backgroundColor: swatch.color }}
-                    />
-                  ))}
-                </div>
               </div>
 
               {/* Background Color */}
-              <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
-                <div className="flex items-center justify-between">
-                  <label className="text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 flex items-center gap-1.5">
-                    <Palette className="w-3.5 h-3.5 text-cyan-500" />
-                    Background Color
-                  </label>
-                  <span className="text-[11px] font-semibold text-slate-400">Background</span>
-                </div>
-
-                <label className="flex items-center gap-3 p-2.5 rounded-xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 hover:border-cyan-400 dark:hover:border-cyan-600 transition-all cursor-pointer group shadow-sm">
+              <div>
+                <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300 mb-2 flex items-center gap-1.5">
+                  <Palette className="w-3.5 h-3.5 text-cyan-500" />
+                  Background Color
+                </label>
+                <label className="flex items-center gap-3.5 p-3 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 hover:border-cyan-400 dark:hover:border-cyan-600 transition-all cursor-pointer group shadow-sm">
                   <div
-                    className="w-8 h-8 rounded-lg border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative overflow-hidden"
+                    className="w-9 h-9 rounded-xl border border-slate-300 dark:border-slate-700 shadow-sm flex items-center justify-center flex-shrink-0 group-hover:scale-105 transition-transform relative overflow-hidden"
                     style={{ backgroundColor: colorLight }}
                   >
                     <input
@@ -270,34 +238,9 @@ export default function QrPage() {
                     <span className="text-xs font-bold text-slate-800 dark:text-slate-200 group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">
                       Choose Background
                     </span>
-                    <span className="text-[10px] text-slate-400">Tap to open color wheel</span>
+                    <span className="text-[11px] text-slate-400">Click to open color picker</span>
                   </div>
                 </label>
-
-                {/* 1-Tap Quick Swatches */}
-                <div className="flex items-center gap-2 pt-0.5">
-                  {[
-                    { color: "#ffffff", name: "Pure White" },
-                    { color: "#f8fafc", name: "Soft Slate" },
-                    { color: "#fffbeb", name: "Warm Cream" },
-                    { color: "#ecfeff", name: "Pale Cyan" },
-                    { color: "#f3e8ff", name: "Pale Purple" },
-                    { color: "#0f172a", name: "Dark Midnight" },
-                  ].map((swatch) => (
-                    <button
-                      key={swatch.color}
-                      type="button"
-                      title={swatch.name}
-                      onClick={() => setColorLight(swatch.color)}
-                      className={`w-6 h-6 rounded-full border transition-all cursor-pointer ${
-                        colorLight.toLowerCase() === swatch.color.toLowerCase()
-                          ? "ring-2 ring-cyan-500 ring-offset-2 dark:ring-offset-slate-900 scale-110 border-white shadow-sm"
-                          : "border-slate-300 dark:border-slate-700 hover:scale-110"
-                      }`}
-                      style={{ backgroundColor: swatch.color }}
-                    />
-                  ))}
-                </div>
               </div>
             </div>
 
