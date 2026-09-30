@@ -120,8 +120,10 @@ export function Navbar() {
               QR Codes
             </Link>
             <Link
-              href="/#convert"
-              className="px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5"
+              href="/convert"
+              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
+                pathname === "/convert" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              }`}
             >
               <ArrowLeftRight className="w-3.5 h-3.5 text-violet-500" />
               Converters
@@ -176,7 +178,9 @@ export function Navbar() {
               <Link
                 href="/#pdf"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <FileText className="w-4 h-4 text-blue-500" />
                 PDF Suite
@@ -184,23 +188,29 @@ export function Navbar() {
               <Link
                 href="/qr"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/qr" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <QrCode className="w-4 h-4 text-indigo-500" />
                 QR Code Gen
               </Link>
               <Link
-                href="/#convert"
+                href="/convert"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/convert" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <ArrowLeftRight className="w-4 h-4 text-violet-500" />
-                Converters
+                Universal Converters
               </Link>
               <Link
                 href="/pages-to-pdf"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/pages-to-pdf" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <Apple className="w-4 h-4 text-slate-600 dark:text-slate-400" />
                 Pages Extractor
@@ -208,7 +218,9 @@ export function Navbar() {
               <Link
                 href="/word-counter"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/word-counter" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <FileText className="w-4 h-4 text-amber-500" />
                 Word Counter
@@ -216,7 +228,9 @@ export function Navbar() {
               <Link
                 href="/citation-generator"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/citation-generator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <Sparkles className="w-4 h-4 text-pink-500" />
                 Citation Maker
@@ -224,7 +238,9 @@ export function Navbar() {
               <Link
                 href="/gpa-calculator"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/gpa-calculator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <GraduationCap className="w-4 h-4 text-cyan-500" />
                 GPA Calculator
@@ -232,7 +248,9 @@ export function Navbar() {
               <Link
                 href="/privacy"
                 onClick={() => setMobileOpen(false)}
-                className="flex items-center gap-2 p-2.5 rounded-xl bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/privacy" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
               >
                 <Shield className="w-4 h-4 text-emerald-500" />
                 Privacy Policy
