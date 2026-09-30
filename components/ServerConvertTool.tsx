@@ -298,7 +298,7 @@ export const VALID_TARGETS: Record<string, string[]> = {
   xls: ["pdf", "xlsx", "csv"],
   csv: ["pdf", "xlsx"],
   ods: ["pdf", "xlsx"],
-  pages: ["pdf"],
+  pages: ["docx", "pdf", "doc", "txt"],
   jpg: ["pdf", "png", "webp"],
   jpeg: ["pdf", "png", "webp"],
   png: ["pdf", "jpg", "webp"],
@@ -309,12 +309,12 @@ export const VALID_TARGETS: Record<string, string[]> = {
 export const QUICK_PRESETS = [
   { from: "docx", to: "pdf", label: "Word ➔ PDF" },
   { from: "pdf", to: "docx", label: "PDF ➔ Word" },
+  { from: "pages", to: "docx", label: "Pages ➔ Word" },
+  { from: "pages", to: "pdf", label: "Pages ➔ PDF" },
   { from: "pptx", to: "pdf", label: "PowerPoint ➔ PDF" },
   { from: "xlsx", to: "pdf", label: "Excel ➔ PDF" },
   { from: "jpg", to: "pdf", label: "Images ➔ PDF" },
-  { from: "pages", to: "pdf", label: "Pages ➔ PDF" },
   { from: "txt", to: "pdf", label: "Text ➔ PDF" },
-  { from: "csv", to: "pdf", label: "CSV ➔ PDF" },
 ];
 
 export const CATEGORY_FILTERS = [
@@ -511,17 +511,19 @@ export function ServerConvertTool({
     setDownloadBlobData(null);
 
     try {
-      // Client-side special cases (e.g. Apple Pages Preview Extraction)
+      // Client-side special case for Pages to PDF if embedded QuickLook is present
       if (fromFormat === "pages" && toFormat === "pdf") {
-        const { extractPagesPreviewPdf } = await import("@/lib/jszip-utils");
-        const res = await extractPagesPreviewPdf(file);
-        if (res.success && res.pdfBlob) {
-          setDownloadBlobData(res.pdfBlob);
-          setDownloadFilename(res.pdfFilename || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`);
-          setStatus("success");
-          return;
-        } else {
-          throw new Error(res.message || "Failed to extract Pages preview.");
+        try {
+          const { extractPagesPreviewPdf } = await import("@/lib/jszip-utils");
+          const res = await extractPagesPreviewPdf(file);
+          if (res.success && res.pdfBlob) {
+            setDownloadBlobData(res.pdfBlob);
+            setDownloadFilename(res.pdfFilename || `${file.name.replace(/\.[^/.]+$/, "")}.pdf`);
+            setStatus("success");
+            return;
+          }
+        } catch (clientErr) {
+          console.warn("Client QuickLook extraction skipped, proceeding with cloud engine:", clientErr);
         }
       }
 
