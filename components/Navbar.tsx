@@ -12,7 +12,6 @@ import {
   FileText,
   QrCode,
   ArrowLeftRight,
-  Apple,
   Shield,
   Command,
   Home,
@@ -126,15 +125,6 @@ export function Navbar() {
               Converters
             </Link>
             <Link
-              href="/pages-to-pdf"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/pages-to-pdf" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
-              }`}
-            >
-              <Apple className="w-3.5 h-3.5 text-slate-700 dark:text-slate-300" />
-              Pages
-            </Link>
-            <Link
               href="/privacy"
               className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
                 pathname === "/privacy" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
@@ -201,16 +191,6 @@ export function Navbar() {
               >
                 <ArrowLeftRight className="w-4 h-4 text-violet-500" />
                 Universal Converters
-              </Link>
-              <Link
-                href="/pages-to-pdf"
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
-                  pathname === "/pages-to-pdf" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
-                }`}
-              >
-                <Apple className="w-4 h-4 text-slate-600 dark:text-slate-400" />
-                Pages Extractor
               </Link>
               <Link
                 href="/word-counter"
