@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import { ToolLayout } from "@/components/ToolLayout";
 import { Dropzone } from "@/components/Dropzone";
 import { ProgressCard } from "@/components/ProgressCard";
@@ -22,29 +22,168 @@ import {
   CheckCircle2,
   Sparkles,
   Sliders,
+  Check,
+  Apple,
+  FileCode,
+  FileType,
 } from "lucide-react";
 
-export interface FormatOption {
+export interface FormatMeta {
   id: string;
   name: string;
+  shortName: string;
   ext: string;
   category: "doc" | "pdf" | "slides" | "sheet" | "image" | "apple" | "text";
+  color: string;
+  bgLight: string;
+  bgDark: string;
+  icon: string;
 }
 
-export const ALL_FORMATS: FormatOption[] = [
-  { id: "docx", name: "Word Document (.docx)", ext: "docx", category: "doc" },
-  { id: "doc", name: "Word Legacy (.doc)", ext: "doc", category: "doc" },
-  { id: "pdf", name: "PDF Document (.pdf)", ext: "pdf", category: "pdf" },
-  { id: "pptx", name: "PowerPoint Slides (.pptx)", ext: "pptx", category: "slides" },
-  { id: "ppt", name: "PowerPoint Legacy (.ppt)", ext: "ppt", category: "slides" },
-  { id: "xlsx", name: "Excel Spreadsheet (.xlsx)", ext: "xlsx", category: "sheet" },
-  { id: "xls", name: "Excel Legacy (.xls)", ext: "xls", category: "sheet" },
-  { id: "csv", name: "CSV Table (.csv)", ext: "csv", category: "sheet" },
-  { id: "pages", name: "Apple Pages (.pages)", ext: "pages", category: "apple" },
-  { id: "jpg", name: "JPEG Image (.jpg)", ext: "jpg", category: "image" },
-  { id: "png", name: "PNG Image (.png)", ext: "png", category: "image" },
-  { id: "webp", name: "WebP Image (.webp)", ext: "webp", category: "image" },
-  { id: "txt", name: "Plain Text (.txt)", ext: "txt", category: "text" },
+export const ALL_FORMATS: FormatMeta[] = [
+  {
+    id: "docx",
+    name: "Word Document (.docx)",
+    shortName: "Word (.docx)",
+    ext: "docx",
+    category: "doc",
+    color: "text-blue-600 dark:text-blue-400",
+    bgLight: "bg-blue-50",
+    bgDark: "dark:bg-blue-950/60",
+    icon: "FileSpreadsheet",
+  },
+  {
+    id: "doc",
+    name: "Word Legacy (.doc)",
+    shortName: "Word (.doc)",
+    ext: "doc",
+    category: "doc",
+    color: "text-blue-600 dark:text-blue-400",
+    bgLight: "bg-blue-50",
+    bgDark: "dark:bg-blue-950/60",
+    icon: "FileSpreadsheet",
+  },
+  {
+    id: "pdf",
+    name: "PDF Document (.pdf)",
+    shortName: "PDF Document",
+    ext: "pdf",
+    category: "pdf",
+    color: "text-rose-600 dark:text-rose-400",
+    bgLight: "bg-rose-50",
+    bgDark: "dark:bg-rose-950/60",
+    icon: "FileText",
+  },
+  {
+    id: "pptx",
+    name: "PowerPoint Slides (.pptx)",
+    shortName: "PowerPoint (.pptx)",
+    ext: "pptx",
+    category: "slides",
+    color: "text-amber-600 dark:text-amber-400",
+    bgLight: "bg-amber-50",
+    bgDark: "dark:bg-amber-950/60",
+    icon: "Presentation",
+  },
+  {
+    id: "ppt",
+    name: "PowerPoint Legacy (.ppt)",
+    shortName: "PowerPoint (.ppt)",
+    ext: "ppt",
+    category: "slides",
+    color: "text-amber-600 dark:text-amber-400",
+    bgLight: "bg-amber-50",
+    bgDark: "dark:bg-amber-950/60",
+    icon: "Presentation",
+  },
+  {
+    id: "xlsx",
+    name: "Excel Spreadsheet (.xlsx)",
+    shortName: "Excel (.xlsx)",
+    ext: "xlsx",
+    category: "sheet",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgLight: "bg-emerald-50",
+    bgDark: "dark:bg-emerald-950/60",
+    icon: "Sheet",
+  },
+  {
+    id: "xls",
+    name: "Excel Legacy (.xls)",
+    shortName: "Excel (.xls)",
+    ext: "xls",
+    category: "sheet",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgLight: "bg-emerald-50",
+    bgDark: "dark:bg-emerald-950/60",
+    icon: "Sheet",
+  },
+  {
+    id: "csv",
+    name: "CSV Spreadsheet (.csv)",
+    shortName: "CSV Table",
+    ext: "csv",
+    category: "sheet",
+    color: "text-emerald-600 dark:text-emerald-400",
+    bgLight: "bg-emerald-50",
+    bgDark: "dark:bg-emerald-950/60",
+    icon: "Sheet",
+  },
+  {
+    id: "pages",
+    name: "Apple Pages (.pages)",
+    shortName: "Apple Pages",
+    ext: "pages",
+    category: "apple",
+    color: "text-indigo-600 dark:text-indigo-400",
+    bgLight: "bg-indigo-50",
+    bgDark: "dark:bg-indigo-950/60",
+    icon: "Apple",
+  },
+  {
+    id: "jpg",
+    name: "JPEG Image (.jpg)",
+    shortName: "JPEG Image",
+    ext: "jpg",
+    category: "image",
+    color: "text-violet-600 dark:text-violet-400",
+    bgLight: "bg-violet-50",
+    bgDark: "dark:bg-violet-950/60",
+    icon: "ImageIcon",
+  },
+  {
+    id: "png",
+    name: "PNG Image (.png)",
+    shortName: "PNG Image",
+    ext: "png",
+    category: "image",
+    color: "text-violet-600 dark:text-violet-400",
+    bgLight: "bg-violet-50",
+    bgDark: "dark:bg-violet-950/60",
+    icon: "ImageIcon",
+  },
+  {
+    id: "webp",
+    name: "WebP Image (.webp)",
+    shortName: "WebP Image",
+    ext: "webp",
+    category: "image",
+    color: "text-violet-600 dark:text-violet-400",
+    bgLight: "bg-violet-50",
+    bgDark: "dark:bg-violet-950/60",
+    icon: "ImageIcon",
+  },
+  {
+    id: "txt",
+    name: "Plain Text (.txt)",
+    shortName: "Plain Text (.txt)",
+    ext: "txt",
+    category: "text",
+    color: "text-slate-600 dark:text-slate-400",
+    bgLight: "bg-slate-50",
+    bgDark: "dark:bg-slate-950/60",
+    icon: "FileCode",
+  },
 ];
 
 export const VALID_TARGETS: Record<string, string[]> = {
@@ -62,6 +201,15 @@ export const VALID_TARGETS: Record<string, string[]> = {
   webp: ["pdf", "jpg", "png"],
 };
 
+export const QUICK_PRESETS = [
+  { from: "docx", to: "pdf", label: "Word ➔ PDF", icon: "FileSpreadsheet" },
+  { from: "pdf", to: "docx", label: "PDF ➔ Word", icon: "FileEdit" },
+  { from: "pptx", to: "pdf", label: "PowerPoint ➔ PDF", icon: "Presentation" },
+  { from: "xlsx", to: "pdf", label: "Excel ➔ PDF", icon: "Sheet" },
+  { from: "jpg", to: "pdf", label: "Images ➔ PDF", icon: "ImageIcon" },
+  { from: "pages", to: "pdf", label: "Pages ➔ PDF", icon: "Apple" },
+];
+
 export interface ServerConvertToolProps {
   toolId?: string;
   defaultFromFormat?: string;
@@ -73,7 +221,7 @@ export interface ServerConvertToolProps {
 }
 
 export function ServerConvertTool({
-  toolId = "word-to-pdf",
+  toolId = "universal-converter",
   defaultFromFormat = "docx",
   defaultToFormat = "pdf",
   accept,
@@ -87,7 +235,7 @@ export function ServerConvertTool({
     category: "convert" as const,
     shortDesc: "Convert between Word, PDF, Excel, PowerPoint, Images, and Text seamlessly.",
     description:
-      "Universal file converter dashboard. Specify your uploaded document and desired target format with high-fidelity output.",
+      "A friendly, student-first document converter. Upload your file, verify the document format, and select your desired target file with 1 click.",
     iconName: "ArrowLeftRight",
     badge: "Fast Cloud Convert",
     badgeType: "cloud" as const,
@@ -99,9 +247,9 @@ export function ServerConvertTool({
       "Immediate memory processing & auto-deletion guarantee",
     ],
     steps: [
-      { step: 1, title: "Upload Document", desc: "Select or drop any file." },
-      { step: 2, title: "Configure Transfer", desc: "Confirm uploaded document type and target format." },
-      { step: 3, title: "Convert & Download", desc: "Download your converted file immediately." },
+      { step: 1, title: "Upload Document", desc: "Select or drop your file." },
+      { step: 2, title: "Choose Transfer Target", desc: "Pick your desired output format from the options." },
+      { step: 3, title: "Convert & Download", desc: "Download your converted file instantly." },
     ],
     faqs: [
       {
@@ -150,7 +298,6 @@ export function ServerConvertTool({
     setErrorMessage("");
   };
 
-  // Handle source format change
   const handleFromFormatChange = (newFrom: string) => {
     setFromFormat(newFrom);
     const validTargets = VALID_TARGETS[newFrom] || ["pdf"];
@@ -159,15 +306,23 @@ export function ServerConvertTool({
     }
   };
 
+  const handlePresetClick = (presetFrom: string, presetTo: string) => {
+    setFromFormat(presetFrom);
+    setToFormat(presetTo);
+  };
+
   const availableTargets = useMemo(() => {
     return VALID_TARGETS[fromFormat] || ["pdf"];
   }, [fromFormat]);
+
+  const fromMeta = ALL_FORMATS.find((f) => f.id === fromFormat) || ALL_FORMATS[0];
+  const toMeta = ALL_FORMATS.find((f) => f.id === toFormat) || ALL_FORMATS[2];
 
   const handleStartConversion = async () => {
     if (!file) return;
     setStatus("processing");
     setProgressPercent(15);
-    setStatusText(`Transferring ${fromFormat.toUpperCase()} to ${toFormat.toUpperCase()}...`);
+    setStatusText(`Transferring ${fromMeta.shortName} to ${toMeta.shortName}...`);
     setErrorMessage("");
     setDownloadBlobData(null);
 
@@ -186,7 +341,7 @@ export function ServerConvertTool({
         }
       }
 
-      // Standard / serverless conversion
+      // Standard serverless conversion via API
       const result = await executeDocumentConversion({
         file,
         fromFormat,
@@ -227,7 +382,43 @@ export function ServerConvertTool({
 
   return (
     <ToolLayout tool={tool}>
-      <div className="space-y-6">
+      <div className="space-y-6 max-w-4xl mx-auto">
+        {/* Quick Conversion Preset Shortcuts */}
+        {!file && (
+          <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-6 shadow-sm space-y-3">
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-indigo-500" />
+                Popular Conversion Presets
+              </span>
+              <span className="text-[11px] text-slate-400 hidden sm:inline">
+                Click any preset to quick-select
+              </span>
+            </div>
+
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-2">
+              {QUICK_PRESETS.map((p) => {
+                const isSelected = fromFormat === p.from && toFormat === p.to;
+                return (
+                  <button
+                    key={p.label}
+                    type="button"
+                    onClick={() => handlePresetClick(p.from, p.to)}
+                    className={`p-2.5 rounded-2xl border text-xs font-bold transition-all flex flex-col items-center justify-center gap-1 text-center ${
+                      isSelected
+                        ? "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-500/20 scale-102"
+                        : "bg-slate-50 dark:bg-slate-950 text-slate-700 dark:text-slate-300 border-slate-200 dark:border-slate-800 hover:border-indigo-400 dark:hover:border-indigo-600 hover:bg-indigo-50/50"
+                    }`}
+                  >
+                    <span>{p.label}</span>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Upload Dropzone */}
         {!file ? (
           <Dropzone
             onFilesSelected={handleFilesSelected}
@@ -235,50 +426,57 @@ export function ServerConvertTool({
               accept ||
               ".docx,.doc,.pdf,.pptx,.ppt,.xlsx,.xls,.csv,.pages,.jpg,.jpeg,.png,.webp"
             }
-            title={`Drop your document here`}
-            description="Upload Word, PDF, PowerPoint, Excel, Images, or Apple Pages up to 30MB"
+            title={`Drop your ${fromMeta.shortName} or any document here`}
+            description="Supports Word, PDF, PowerPoint, Excel, Images, and Apple Pages (up to 30MB)"
             icon={iconNode || <ArrowRightLeft className="w-8 h-8" />}
           />
         ) : (
           <div className="space-y-6">
-            {/* Interactive Configuration Dashboard */}
+            {/* User-Friendly Document Transfer Dashboard Card */}
             <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-6 sm:p-8 shadow-sm space-y-6">
-              {/* File Info Bar */}
-              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-100 dark:border-slate-800">
-                <div className="flex items-center gap-3">
-                  <div className="w-12 h-12 rounded-2xl bg-indigo-50 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold">
+              {/* Top File Summary Bar */}
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-5 border-b border-slate-100 dark:border-slate-800">
+                <div className="flex items-center gap-3.5 min-w-0">
+                  <div
+                    className={`w-12 h-12 rounded-2xl flex items-center justify-center flex-shrink-0 font-bold ${fromMeta.bgLight} ${fromMeta.bgDark} ${fromMeta.color}`}
+                  >
                     <FileText className="w-6 h-6" />
                   </div>
-                  <div>
-                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base">
+                  <div className="truncate">
+                    <h3 className="font-bold text-slate-900 dark:text-slate-100 text-sm sm:text-base truncate">
                       {file.name}
                     </h3>
-                    <p className="text-xs text-slate-500 dark:text-slate-400">
-                      {formatBytes(file.size)} · Detected as{" "}
-                      <strong className="text-indigo-600 dark:text-indigo-400 uppercase">
-                        .{fromFormat}
-                      </strong>
+                    <p className="text-xs text-slate-500 dark:text-slate-400 flex items-center gap-2 mt-0.5">
+                      <span>{formatBytes(file.size)}</span>
+                      <span>·</span>
+                      <span className="inline-flex items-center gap-1 font-semibold text-indigo-600 dark:text-indigo-400">
+                        <Check className="w-3 h-3 text-emerald-500" />
+                        Auto-detected as {fromMeta.shortName}
+                      </span>
                     </p>
                   </div>
                 </div>
 
                 <button
                   onClick={handleReset}
-                  className="text-xs font-semibold text-slate-400 hover:text-rose-600 transition-colors self-start sm:self-auto"
+                  className="px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 hover:bg-rose-50 dark:hover:bg-rose-950/40 text-slate-500 hover:text-rose-600 text-xs font-semibold transition-colors self-start sm:self-auto"
                 >
-                  Upload Different File
+                  Choose Different File
                 </button>
               </div>
 
-              {/* Conversion Flow Selector Grid */}
+              {/* Step 1 & Step 2 Interactive Transfer Box */}
               <div className="grid grid-cols-1 md:grid-cols-11 gap-4 items-center">
-                {/* 1. Source Document Question */}
+                {/* 1. What Document Did You Upload? */}
                 <div className="md:col-span-5 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                      1. Uploaded Document Type
-                    </label>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-slate-500 dark:text-slate-400 flex items-center gap-1.5">
+                      <span className="w-5 h-5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-700 dark:text-slate-300 text-[10px] font-black flex items-center justify-center">
+                        1
+                      </span>
+                      Uploaded Document
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-slate-200 dark:bg-slate-800 text-slate-600 dark:text-slate-400">
                       FROM
                     </span>
                   </div>
@@ -297,74 +495,90 @@ export function ServerConvertTool({
                   </select>
 
                   <p className="text-[11px] text-slate-400">
-                    Source format verified from file header
+                    Auto-verified from uploaded file format
                   </p>
                 </div>
 
-                {/* Flow Arrow */}
+                {/* Animated Arrow Connector */}
                 <div className="md:col-span-1 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400 flex items-center justify-center font-bold shadow-sm animate-pulse">
+                  <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
                     <ArrowRight className="w-5 h-5 hidden md:block" />
                     <ArrowRight className="w-5 h-5 rotate-90 md:hidden" />
                   </div>
                 </div>
 
-                {/* 2. Target Format Question */}
-                <div className="md:col-span-5 p-5 rounded-2xl bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800 space-y-3">
+                {/* 2. What Do You Want to Transfer It To? */}
+                <div className="md:col-span-5 p-5 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/60 dark:border-indigo-900/60 space-y-3">
                   <div className="flex items-center justify-between">
-                    <label className="block text-xs font-bold uppercase tracking-wider text-slate-700 dark:text-slate-300">
-                      2. Convert & Transfer To
-                    </label>
-                    <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-indigo-100 dark:bg-indigo-950 text-indigo-600 dark:text-indigo-400">
-                      TO
+                    <span className="text-xs font-extrabold uppercase tracking-wider text-indigo-900 dark:text-indigo-300 flex items-center gap-1.5">
+                      <span className="w-5 h-5 rounded-full bg-indigo-600 text-white text-[10px] font-black flex items-center justify-center">
+                        2
+                      </span>
+                      Convert & Transfer To
+                    </span>
+                    <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-indigo-600 text-white">
+                      TARGET
                     </span>
                   </div>
 
-                  <select
-                    value={toFormat}
-                    onChange={(e) => setToFormat(e.target.value)}
-                    disabled={status === "processing"}
-                    className="w-full p-3 rounded-xl bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-800 text-slate-900 dark:text-slate-100 text-xs sm:text-sm font-bold focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                  >
+                  {/* Clickable Target Format Cards */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
                     {availableTargets.map((tgtId) => {
-                      const tgtFmt = ALL_FORMATS.find((f) => f.id === tgtId);
+                      const tgtFmt = ALL_FORMATS.find((f) => f.id === tgtId) || {
+                        id: tgtId,
+                        name: `${tgtId.toUpperCase()} File`,
+                        shortName: tgtId.toUpperCase(),
+                      };
+                      const isSelected = toFormat === tgtId;
+
                       return (
-                        <option key={tgtId} value={tgtId}>
-                          {tgtFmt?.name || `${tgtId.toUpperCase()} File`}
-                        </option>
+                        <button
+                          key={tgtId}
+                          type="button"
+                          onClick={() => setToFormat(tgtId)}
+                          disabled={status === "processing"}
+                          className={`p-2.5 rounded-xl border text-left transition-all flex items-center justify-between ${
+                            isSelected
+                              ? "bg-indigo-600 border-indigo-600 text-white shadow-md shadow-indigo-500/20 font-bold"
+                              : "bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-800 text-slate-800 dark:text-slate-200 hover:border-indigo-400 font-medium"
+                          }`}
+                        >
+                          <span className="text-xs">{tgtFmt.shortName}</span>
+                          {isSelected && <CheckCircle2 className="w-4 h-4 text-white flex-shrink-0" />}
+                        </button>
                       );
                     })}
-                  </select>
+                  </div>
 
-                  <p className="text-[11px] text-slate-400">
-                    {availableTargets.length} compatible transfer format(s) available
+                  <p className="text-[11px] text-indigo-700 dark:text-indigo-400">
+                    Click your preferred format above
                   </p>
                 </div>
               </div>
 
-              {/* Action Button */}
+              {/* Big Friendly Action Button */}
               {status !== "success" && (
                 <button
                   onClick={handleStartConversion}
                   disabled={status === "processing"}
-                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 to-blue-600 hover:from-indigo-500 hover:to-blue-500 disabled:opacity-50 text-white font-bold text-sm shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] active:scale-98 cursor-pointer"
+                  className="w-full py-4 px-6 rounded-2xl bg-gradient-to-r from-indigo-600 via-blue-600 to-teal-500 hover:from-indigo-500 hover:via-blue-500 hover:to-teal-400 disabled:opacity-50 text-white font-extrabold text-sm sm:text-base shadow-xl shadow-indigo-500/25 flex items-center justify-center gap-2.5 transition-all hover:scale-[1.01] active:scale-98 cursor-pointer"
                 >
                   {status === "processing" ? (
                     <>
-                      <RefreshCw className="w-4 h-4 animate-spin" />
-                      Converting {fromFormat.toUpperCase()} to {toFormat.toUpperCase()}...
+                      <RefreshCw className="w-5 h-5 animate-spin" />
+                      Converting {fromMeta.shortName} to {toMeta.shortName}...
                     </>
                   ) : (
                     <>
-                      <Sparkles className="w-4 h-4" />
-                      Convert {fromFormat.toUpperCase()} to {toFormat.toUpperCase()} Now
+                      <Sparkles className="w-5 h-5" />
+                      Convert {fromMeta.shortName} ➔ {toMeta.shortName} Now
                     </>
                   )}
                 </button>
               )}
             </div>
 
-            {/* Progress Card */}
+            {/* Progress / Download Result Card */}
             {(status === "processing" || status === "success" || status === "error") && (
               <ProgressCard
                 filename={downloadFilename || `${file.name.replace(/\.[^/.]+$/, "")}.${toFormat}`}
@@ -373,17 +587,17 @@ export function ServerConvertTool({
                 statusText={statusText}
                 progressPercent={progressPercent}
                 errorMessage={errorMessage}
-                downloadLabel={`Download ${toFormat.toUpperCase()} File`}
+                downloadLabel={`Download ${toMeta.shortName}`}
                 onDownload={handleDownload}
                 onReset={handleReset}
               />
             )}
 
-            {/* Privacy Assurance Box */}
-            <div className="p-4 rounded-2xl bg-indigo-50/50 dark:bg-indigo-950/30 border border-indigo-200/50 dark:border-indigo-900/40 flex items-start gap-3">
-              <ShieldCheck className="w-5 h-5 text-indigo-600 dark:text-indigo-400 flex-shrink-0 mt-0.5" />
-              <div className="text-xs text-indigo-950 dark:text-indigo-200 leading-relaxed">
-                <strong>Zero-Retention Guarantee:</strong> Uploaded files are converted securely in isolated memory and auto-purged immediately after processing.
+            {/* Privacy Guarantee Note */}
+            <div className="p-4 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 flex items-start gap-3">
+              <ShieldCheck className="w-5 h-5 text-emerald-500 flex-shrink-0 mt-0.5" />
+              <div className="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">
+                <strong>Privacy Guaranteed:</strong> Your document is converted securely in temporary RAM memory and purged immediately after download. No file contents are saved or shared.
               </div>
             </div>
           </div>
