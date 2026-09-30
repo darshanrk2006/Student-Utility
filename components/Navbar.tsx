@@ -125,6 +125,15 @@ export function Navbar() {
               Converters
             </Link>
             <Link
+              href="/gpa-calculator"
+              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
+                pathname === "/gpa-calculator" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              }`}
+            >
+              <GraduationCap className="w-3.5 h-3.5 text-cyan-500" />
+              GPA Calculator
+            </Link>
+            <Link
               href="/privacy"
               className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
                 pathname === "/privacy" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
