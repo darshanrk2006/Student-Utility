@@ -487,10 +487,10 @@ export const ALL_FORMATS: FormatMeta[] = [
 
 export const VALID_TARGETS: Record<string, string[]> = {
   // Documents
-  docx: ["pdf", "txt", "rtf", "odt", "html", "epub", "jpg", "png"],
-  doc: ["docx", "pdf", "txt", "rtf", "odt", "html"],
-  rtf: ["docx", "pdf", "txt", "odt", "html"],
-  odt: ["docx", "pdf", "txt", "rtf", "html"],
+  docx: ["pdf", "pages", "txt", "rtf", "odt", "html", "epub", "jpg", "png"],
+  doc: ["docx", "pdf", "pages", "txt", "rtf", "odt", "html"],
+  rtf: ["docx", "pdf", "pages", "txt", "odt", "html"],
+  odt: ["docx", "pdf", "pages", "txt", "rtf", "html"],
   html: ["pdf", "docx", "txt", "png", "jpg"],
   md: ["pdf", "docx", "html", "txt"],
 
@@ -499,18 +499,18 @@ export const VALID_TARGETS: Record<string, string[]> = {
   mobi: ["pdf", "epub", "txt"],
 
   // PDF
-  pdf: ["docx", "pptx", "xlsx", "png", "jpg", "txt", "html", "epub"],
+  pdf: ["docx", "pages", "pptx", "key", "xlsx", "numbers", "png", "jpg", "txt", "html", "epub"],
 
   // Presentations
-  pptx: ["pdf", "ppt", "odp", "png", "jpg"],
-  ppt: ["pptx", "pdf", "odp", "png"],
+  pptx: ["pdf", "key", "ppt", "odp", "png", "jpg"],
+  ppt: ["pptx", "pdf", "key", "odp", "png"],
   odp: ["pptx", "pdf", "ppt"],
-  key: ["pdf", "pptx", "png"],
+  key: ["pptx", "pdf", "png", "jpg"],
 
   // Spreadsheets
-  xlsx: ["pdf", "csv", "xls", "ods", "html"],
-  xls: ["xlsx", "pdf", "csv", "ods"],
-  csv: ["xlsx", "pdf", "xls", "tsv"],
+  xlsx: ["pdf", "numbers", "csv", "xls", "ods", "html"],
+  xls: ["xlsx", "pdf", "numbers", "csv", "ods"],
+  csv: ["xlsx", "numbers", "pdf", "xls", "tsv"],
   ods: ["xlsx", "pdf", "csv"],
   numbers: ["xlsx", "pdf", "csv"],
   tsv: ["csv", "xlsx", "pdf"],
@@ -519,9 +519,9 @@ export const VALID_TARGETS: Record<string, string[]> = {
   pages: ["docx", "pdf", "doc", "txt", "rtf"],
 
   // Images
-  jpg: ["png", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
-  jpeg: ["png", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
-  png: ["jpg", "pdf", "webp", "gif", "svg", "bmp", "tiff", "ico"],
+  jpg: ["png", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
+  jpeg: ["png", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
+  png: ["jpg", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
   webp: ["png", "jpg", "pdf", "gif", "bmp"],
   gif: ["png", "jpg", "pdf", "webp"],
   svg: ["png", "jpg", "pdf", "webp"],
@@ -531,7 +531,7 @@ export const VALID_TARGETS: Record<string, string[]> = {
   ico: ["png", "jpg"],
 
   // Text & Data
-  txt: ["pdf", "docx", "html", "rtf"],
+  txt: ["pdf", "docx", "pages", "html", "rtf"],
   json: ["csv", "txt", "xlsx"],
   xml: ["json", "txt", "csv", "pdf"],
 };
