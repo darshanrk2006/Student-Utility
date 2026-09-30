@@ -6,8 +6,8 @@ export default function WordToPdfPage() {
     <ServerConvertTool
       toolId="word-to-pdf"
       accept=".docx,.doc,application/vnd.openxmlformats-officedocument.wordprocessingml.document,application/msword"
-      fromFormat="docx"
-      toFormat="pdf"
+      defaultFromFormat="docx"
+      defaultToFormat="pdf"
       iconNode={<FileSpreadsheet className="w-8 h-8" />}
     />
   );

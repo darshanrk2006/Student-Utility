@@ -325,6 +325,37 @@ export const TOOLS: ToolItem[] = [
 
   // --- Server-Side Document Converters ---
   {
+    id: "universal-converter",
+    name: "Universal Document Converter",
+    slug: "convert",
+    href: "/convert",
+    category: "convert",
+    shortDesc: "All-in-one converter: select uploaded document type and desired target format.",
+    description:
+      "Universal file converter dashboard. Specify your uploaded document and desired target format with high-fidelity output.",
+    iconName: "ArrowLeftRight",
+    badge: "Fast Cloud Convert",
+    badgeType: "cloud",
+    isClientOnly: false,
+    tags: ["document converter", "universal converter", "convert files", "file transfer", "converter dashboard"],
+    features: [
+      "Select custom source format and target format dynamically",
+      "Converts Word, PDF, PowerPoint, Excel, Images, and Text",
+      "Immediate memory processing & auto-deletion guarantee",
+    ],
+    steps: [
+      { step: 1, title: "Upload Document", desc: "Select or drop any file." },
+      { step: 2, title: "Configure Transfer", desc: "Confirm uploaded document type and target format." },
+      { step: 3, title: "Convert & Download", desc: "Download your converted file immediately." },
+    ],
+    faqs: [
+      {
+        q: "How does the converter identify my file?",
+        a: "The dashboard automatically detects your document type from its header and extension, and lets you choose from all compatible target formats.",
+      },
+    ],
+  },
+  {
     id: "word-to-pdf",
     name: "Word to PDF",
     slug: "word-to-pdf",

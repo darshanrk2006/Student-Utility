@@ -6,8 +6,8 @@ export default function PowerPointToPdfPage() {
     <ServerConvertTool
       toolId="powerpoint-to-pdf"
       accept=".pptx,.ppt,application/vnd.openxmlformats-officedocument.presentationml.presentation,application/vnd.ms-powerpoint"
-      fromFormat="pptx"
-      toFormat="pdf"
+      defaultFromFormat="pptx"
+      defaultToFormat="pdf"
       iconNode={<Presentation className="w-8 h-8" />}
     />
   );

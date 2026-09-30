@@ -6,8 +6,8 @@ export default function ExcelToPdfPage() {
     <ServerConvertTool
       toolId="excel-to-pdf"
       accept=".xlsx,.xls,.csv,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel,text/csv"
-      fromFormat="xlsx"
-      toFormat="pdf"
+      defaultFromFormat="xlsx"
+      defaultToFormat="pdf"
       iconNode={<Sheet className="w-8 h-8" />}
     />
   );

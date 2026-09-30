@@ -6,8 +6,8 @@ export default function PdfToWordPage() {
     <ServerConvertTool
       toolId="pdf-to-word"
       accept=".pdf,application/pdf"
-      fromFormat="pdf"
-      toFormat="docx"
+      defaultFromFormat="pdf"
+      defaultToFormat="docx"
       iconNode={<FileEdit className="w-8 h-8" />}
     />
   );
