@@ -15,6 +15,7 @@ import {
   Apple,
   Shield,
   Command,
+  Home,
 } from "lucide-react";
 import { ThemeToggle } from "./ThemeToggle";
 import { TOOLS, TOOL_CATEGORIES } from "@/lib/tools-data";
@@ -104,11 +105,13 @@ export function Navbar() {
           {/* Category Quick Links (Desktop) */}
           <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300">
             <Link
-              href="/#pdf"
-              className="px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5"
+              href="/"
+              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
+                pathname === "/" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              }`}
             >
-              <FileText className="w-3.5 h-3.5 text-blue-500" />
-              PDFs
+              <Home className="w-3.5 h-3.5 text-blue-500" />
+              HOME
             </Link>
             <Link
               href="/qr"
@@ -176,14 +179,14 @@ export function Navbar() {
           <div className="lg:hidden border-t border-slate-200 dark:border-slate-800 bg-white/95 dark:bg-slate-950/95 backdrop-blur-md px-4 pt-3 pb-6 space-y-3">
             <div className="grid grid-cols-2 gap-2 text-sm font-medium">
               <Link
-                href="/#pdf"
+                href="/"
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
                   pathname === "/" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
                 }`}
               >
-                <FileText className="w-4 h-4 text-blue-500" />
-                PDF Suite
+                <Home className="w-4 h-4 text-blue-500" />
+                HOME
               </Link>
               <Link
                 href="/qr"
