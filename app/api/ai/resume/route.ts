@@ -40,53 +40,64 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Call Google Gemini 3.8 Flash endpoint
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
+    const candidateModels = ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-2.5-flash"];
+    let lastError = "Could not generate content";
 
-    const body: any = {
-      contents: [
-        {
-          role: "user",
-          parts: [{ text: prompt }],
+    for (const model of candidateModels) {
+      const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
+
+      const body: any = {
+        contents: [
+          {
+            role: "user",
+            parts: [{ text: prompt }],
+          },
+        ],
+        generationConfig: {
+          temperature: 0.7,
+          maxOutputTokens: 2000,
         },
-      ],
-      generationConfig: {
-        temperature: 0.7,
-        maxOutputTokens: 2000,
-      },
-    };
-
-    if (systemInstruction) {
-      body.systemInstruction = {
-        parts: [{ text: systemInstruction }],
       };
+
+      if (systemInstruction) {
+        body.systemInstruction = {
+          parts: [{ text: systemInstruction }],
+        };
+      }
+
+      try {
+        const response = await fetch(endpoint, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(body),
+        });
+
+        if (response.ok) {
+          const data = await response.json();
+          const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
+          if (text) {
+            return NextResponse.json({
+              success: true,
+              text: text.trim(),
+              provider: `Google ${model}`,
+            });
+          }
+        } else {
+          const err = await response.json().catch(() => ({}));
+          lastError = err.error?.message || response.statusText;
+        }
+      } catch (err: any) {
+        lastError = err.message;
+      }
     }
 
-    const response = await fetch(endpoint, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(body),
-    });
-
-    if (!response.ok) {
-      const err = await response.json().catch(() => ({}));
-      return NextResponse.json(
-        {
-          error: err.error?.message || response.statusText,
-          useFallback: true,
-        },
-        { status: 200 }
-      );
-    }
-
-    const data = await response.json();
-    const text = data.candidates?.[0]?.content?.parts?.[0]?.text || "";
-
-    return NextResponse.json({
-      success: true,
-      text: text.trim(),
-      provider: "Google Gemini Flash",
-    });
+    return NextResponse.json(
+      {
+        error: lastError,
+        useFallback: true,
+      },
+      { status: 200 }
+    );
   } catch (error: any) {
     return NextResponse.json(
       { error: error.message || "Internal server error", useFallback: true },
