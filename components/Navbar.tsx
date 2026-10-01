@@ -84,63 +84,72 @@ export function Navbar() {
           {/* Desktop Search Trigger */}
           <button
             onClick={() => setSearchOpen(true)}
-            className="hidden md:flex items-center gap-3 px-3.5 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800/90 text-slate-500 dark:text-slate-400 text-sm transition-all w-64 lg:w-72 justify-between"
+            className="hidden md:flex items-center gap-2.5 px-3 py-1.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50/80 dark:bg-slate-900/80 hover:bg-slate-100 dark:hover:bg-slate-800/90 text-slate-500 dark:text-slate-400 text-xs sm:text-sm transition-all w-40 lg:w-48 xl:w-60 justify-between shrink-0"
           >
-            <div className="flex items-center gap-2">
-              <Search className="w-4 h-4 text-slate-400" />
-              <span>Search any tool...</span>
+            <div className="flex items-center gap-2 truncate">
+              <Search className="w-3.5 h-3.5 text-slate-400 shrink-0" />
+              <span className="truncate">Search tools...</span>
             </div>
-            <kbd className="hidden lg:flex items-center gap-0.5 text-[10px] font-semibold bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-400">
+            <kbd className="hidden xl:flex items-center gap-0.5 text-[10px] font-semibold bg-white dark:bg-slate-800 px-1.5 py-0.5 rounded border border-slate-200 dark:border-slate-700 text-slate-400 shrink-0">
               <Command className="w-3 h-3" />K
             </kbd>
           </button>
 
           {/* Category Quick Links (Desktop) */}
-          <nav className="hidden lg:flex items-center gap-1 text-sm font-medium text-slate-600 dark:text-slate-300">
+          <nav className="hidden lg:flex items-center gap-1 xl:gap-1.5 text-xs xl:text-sm font-semibold text-slate-600 dark:text-slate-300 shrink-0">
             <Link
               href="/"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
               }`}
             >
-              <Home className="w-3.5 h-3.5 text-blue-500" />
-              HOME
+              <Home className="w-3.5 h-3.5 text-blue-500 shrink-0" />
+              <span>HOME</span>
             </Link>
             <Link
-              href="/qr"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/qr" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              href="/resume-builder"
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/resume-builder" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
               }`}
             >
-              <QrCode className="w-3.5 h-3.5 text-indigo-500" />
-              QR Codes
-            </Link>
-            <Link
-              href="/convert"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/convert" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
-              }`}
-            >
-              <ArrowLeftRight className="w-3.5 h-3.5 text-violet-500" />
-              Converters
+              <FileText className="w-3.5 h-3.5 text-cyan-500 shrink-0" />
+              <span>ATS Resume</span>
             </Link>
             <Link
               href="/gpa-calculator"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/gpa-calculator" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/gpa-calculator" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
               }`}
             >
-              <GraduationCap className="w-3.5 h-3.5 text-cyan-500" />
-              GPA Calculator
+              <GraduationCap className="w-3.5 h-3.5 text-indigo-500 shrink-0" />
+              <span>GPA Calculator</span>
+            </Link>
+            <Link
+              href="/qr"
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/qr" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
+              }`}
+            >
+              <QrCode className="w-3.5 h-3.5 text-amber-500 shrink-0" />
+              <span>QR Codes</span>
+            </Link>
+            <Link
+              href="/convert"
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/convert" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
+              }`}
+            >
+              <ArrowLeftRight className="w-3.5 h-3.5 text-violet-500 shrink-0" />
+              <span>Converters</span>
             </Link>
             <Link
               href="/privacy"
-              className={`px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 ${
-                pathname === "/privacy" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40" : ""
+              className={`px-2.5 xl:px-3 py-1.5 rounded-lg hover:text-indigo-600 dark:hover:text-indigo-400 hover:bg-slate-100/80 dark:hover:bg-slate-900 transition-colors flex items-center gap-1.5 whitespace-nowrap shrink-0 ${
+                pathname === "/privacy" ? "text-indigo-600 dark:text-indigo-400 bg-indigo-50/80 dark:bg-indigo-950/40 font-bold" : ""
               }`}
             >
-              <Shield className="w-3.5 h-3.5 text-emerald-500" />
-              Privacy
+              <Shield className="w-3.5 h-3.5 text-emerald-500 shrink-0" />
+              <span>Privacy</span>
             </Link>
           </nav>
 
@@ -182,13 +191,43 @@ export function Navbar() {
                 HOME
               </Link>
               <Link
+                href="/resume-builder"
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/resume-builder" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
+              >
+                <FileText className="w-4 h-4 text-cyan-500" />
+                ATS Resume Maker
+              </Link>
+              <Link
+                href="/gpa-calculator"
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/gpa-calculator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
+              >
+                <GraduationCap className="w-4 h-4 text-indigo-500" />
+                GPA Calculator
+              </Link>
+              <Link
+                href="/marks-calculator"
+                onClick={() => setMobileOpen(false)}
+                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
+                  pathname === "/marks-calculator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
+                }`}
+              >
+                <Sparkles className="w-4 h-4 text-emerald-500" />
+                Marks Target
+              </Link>
+              <Link
                 href="/qr"
                 onClick={() => setMobileOpen(false)}
                 className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
                   pathname === "/qr" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
                 }`}
               >
-                <QrCode className="w-4 h-4 text-indigo-500" />
+                <QrCode className="w-4 h-4 text-amber-500" />
                 QR Code Gen
               </Link>
               <Link
@@ -199,37 +238,7 @@ export function Navbar() {
                 }`}
               >
                 <ArrowLeftRight className="w-4 h-4 text-violet-500" />
-                Universal Converters
-              </Link>
-              <Link
-                href="/word-counter"
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
-                  pathname === "/word-counter" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
-                }`}
-              >
-                <FileText className="w-4 h-4 text-amber-500" />
-                Word Counter
-              </Link>
-              <Link
-                href="/citation-generator"
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
-                  pathname === "/citation-generator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
-                }`}
-              >
-                <Sparkles className="w-4 h-4 text-pink-500" />
-                Citation Maker
-              </Link>
-              <Link
-                href="/gpa-calculator"
-                onClick={() => setMobileOpen(false)}
-                className={`flex items-center gap-2 p-2.5 rounded-xl transition-colors ${
-                  pathname === "/gpa-calculator" ? "bg-indigo-50 dark:bg-indigo-950/60 text-indigo-600 dark:text-indigo-400 font-bold" : "bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200"
-                }`}
-              >
-                <GraduationCap className="w-4 h-4 text-cyan-500" />
-                GPA Calculator
+                Converters
               </Link>
               <Link
                 href="/privacy"

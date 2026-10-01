@@ -122,10 +122,10 @@ export default function PagesToPdfPage() {
                       Open your document in Apple Pages &gt; Choose <strong>File</strong> in the top menu &gt; <strong>Export To</strong> &gt; <strong>PDF</strong> or <strong>Word (.docx)</strong>.
                     </p>
                     <Link
-                      href="/pages-guide"
+                      href="/convert"
                       className="inline-flex items-center gap-1.5 text-xs font-bold text-indigo-600 dark:text-indigo-400 hover:underline"
                     >
-                      View Full Pages Guide &rarr;
+                      Open Universal Converter &rarr;
                     </Link>
                   </div>
                 </div>

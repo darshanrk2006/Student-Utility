@@ -89,8 +89,8 @@ export function Footer() {
                 </Link>
               </li>
               <li>
-                <Link href="/pages-guide" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
-                  Apple Pages Guides
+                <Link href="/marks-calculator" className="hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                  Marks & Grade Calculator
                 </Link>
               </li>
             </ul>
@@ -147,8 +147,6 @@ export function Footer() {
             <Link href="/about" className="hover:underline">
               About
             </Link>
-            <span>·</span>
-            <span>Deploy target: Vercel</span>
           </div>
         </div>
       </div>

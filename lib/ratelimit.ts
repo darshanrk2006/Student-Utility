@@ -47,9 +47,12 @@ export async function checkRateLimit(ip: string): Promise<{
   }
 
   // In-memory fallback
+  const isLocalhost = ip === "127.0.0.1" || ip === "::1" || ip === "localhost";
+  const isDev = process.env.NODE_ENV !== "production";
+
   const now = Date.now();
   const windowMs = 60 * 60 * 1000; // 1 hour
-  const limit = 10;
+  const limit = isLocalhost || isDev ? 500 : 60; // 60 requests/hr in prod, 500 for dev/localhost
 
   const entry = inMemoryStore.get(ip);
   if (!entry || entry.resetTime < now) {

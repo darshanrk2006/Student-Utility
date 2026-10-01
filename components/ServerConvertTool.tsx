@@ -598,6 +598,65 @@ export interface ServerConvertToolProps {
   iconNode?: React.ReactNode;
 }
 
+export const FORMAT_ACCEPT_MAP: Record<string, string> = {
+  pdf: ".pdf,application/pdf",
+  docx: ".docx,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  doc: ".doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+  rtf: ".rtf,application/rtf,text/rtf",
+  odt: ".odt,application/vnd.oasis.opendocument.text",
+  html: ".html,.htm,text/html",
+  md: ".md,.markdown,text/markdown",
+  epub: ".epub,application/epub+zip",
+  mobi: ".mobi",
+  pptx: ".pptx,application/vnd.openxmlformats-officedocument.presentationml.presentation",
+  ppt: ".ppt,.pptx,application/vnd.ms-powerpoint",
+  odp: ".odp,application/vnd.oasis.opendocument.presentation",
+  key: ".key",
+  xlsx: ".xlsx,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  xls: ".xls,.xlsx,application/vnd.ms-excel",
+  csv: ".csv,text/csv",
+  ods: ".ods,application/vnd.oasis.opendocument.spreadsheet",
+  numbers: ".numbers",
+  tsv: ".tsv,text/tab-separated-values",
+  pages: ".pages",
+  jpg: ".jpg,.jpeg,image/jpeg",
+  jpeg: ".jpeg,.jpg,image/jpeg",
+  png: ".png,image/png",
+  webp: ".webp,image/webp",
+  gif: ".gif,image/gif",
+  svg: ".svg,image/svg+xml",
+  bmp: ".bmp,image/bmp",
+  tiff: ".tiff,.tif,image/tiff",
+  heic: ".heic,image/heic,image/heif",
+  ico: ".ico,image/x-icon",
+  txt: ".txt,text/plain",
+  json: ".json,application/json",
+  xml: ".xml,application/xml,text/xml",
+};
+
+export function isFileMatchingFormat(file: File, formatId: string): boolean {
+  const ext = file.name.split(".").pop()?.toLowerCase() || "";
+  if (formatId === "jpg" || formatId === "jpeg") {
+    return ext === "jpg" || ext === "jpeg";
+  }
+  if (formatId === "html") {
+    return ext === "html" || ext === "htm";
+  }
+  if (formatId === "tiff") {
+    return ext === "tiff" || ext === "tif";
+  }
+  if (formatId === "doc") {
+    return ext === "doc" || ext === "docx";
+  }
+  if (formatId === "ppt") {
+    return ext === "ppt" || ext === "pptx";
+  }
+  if (formatId === "xls") {
+    return ext === "xls" || ext === "xlsx";
+  }
+  return ext === formatId.toLowerCase();
+}
+
 export function ServerConvertTool({
   toolId = "universal-converter",
   defaultFromFormat = "docx",
@@ -615,14 +674,14 @@ export function ServerConvertTool({
     description:
       "A student-first document converter. Select your uploaded document type in FROM and choose your desired target format in TO using the matrix below.",
     iconName: "ArrowLeftRight",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud" as const,
-    isClientOnly: false,
+    badge: "100% In-Browser",
+    badgeType: "in-browser" as const,
+    isClientOnly: true,
     tags: ["document converter", "word to pdf", "pdf to word", "file transfer", "converter hub"],
     features: [
       "Select custom source format and target format dynamically",
       "Converts Word, PDF, PowerPoint, Excel, Images, E-Books, and Text",
-      "Immediate memory processing & auto-deletion guarantee",
+      "Immediate memory processing & 100% client-side privacy guarantee",
     ],
     steps: [
       { step: 1, title: "Select Source Format", desc: "Pick your uploaded document format in FROM." },
@@ -665,18 +724,19 @@ export function ServerConvertTool({
   const handleFilesSelected = (files: File[]) => {
     if (!files[0]) return;
     const uploadedFile = files[0];
-    setFile(uploadedFile);
 
-    const detected = detectFormat(uploadedFile.name);
-    setFromFormat(detected);
-
-    const validTargets = VALID_TARGETS[detected] || ["pdf"];
-    if (validTargets.includes(toFormat)) {
-      // keep current target
-    } else {
-      setToFormat(validTargets[0] || "pdf");
+    // Strict validation: Only accept file if it matches the selected FROM format
+    if (!isFileMatchingFormat(uploadedFile, fromFormat)) {
+      const detected = detectFormat(uploadedFile.name);
+      setFile(null);
+      setStatus("error");
+      setErrorMessage(
+        `Selected source format is .${fromFormat.toUpperCase()}, but you uploaded "${uploadedFile.name}". Please upload a .${fromFormat.toUpperCase()} document, or select .${detected.toUpperCase()} in the FROM panel.`
+      );
+      return;
     }
 
+    setFile(uploadedFile);
     setStatus("configuring");
     setDownloadBlobData(null);
     setErrorMessage("");
@@ -808,6 +868,26 @@ export function ServerConvertTool({
   return (
     <ToolLayout tool={tool}>
       <div className="space-y-6 max-w-5xl mx-auto">
+        {/* Top 100% In-Browser Trust Banner */}
+        <div className="p-4 rounded-3xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-900/60 flex items-center justify-between gap-4">
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
+              <ShieldCheck className="w-5 h-5" />
+            </div>
+            <div>
+              <h4 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider">
+                100% In-Browser Document Engine ($0 Forever)
+              </h4>
+              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
+                Converts Word, PDF, Excel, PowerPoint, Images, Text, and Code locally inside your device memory with zero API keys or external server uploads.
+              </p>
+            </div>
+          </div>
+          <span className="hidden sm:inline-flex text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
+            No API Keys Needed
+          </span>
+        </div>
+
         {/* Quick Conversion Preset Shortcuts */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-sm space-y-3">
           <div className="flex items-center justify-between">
@@ -1143,16 +1223,32 @@ export function ServerConvertTool({
           </div>
         </div>
 
+        {/* Error Notification when invalid format is rejected */}
+        {!file && status === "error" && errorMessage && (
+          <div className="p-4 rounded-2xl bg-rose-50 dark:bg-rose-950/50 border border-rose-200 dark:border-rose-900 flex items-center justify-between gap-3 text-rose-800 dark:text-rose-200 text-xs sm:text-sm">
+            <div className="flex items-center gap-2.5">
+              <span className="w-2 h-2 rounded-full bg-rose-500 animate-ping shrink-0" />
+              <strong>Validation Error:</strong> {errorMessage}
+            </div>
+            <button
+              onClick={() => {
+                setStatus("idle");
+                setErrorMessage("");
+              }}
+              className="text-xs font-bold text-rose-600 dark:text-rose-400 hover:underline shrink-0"
+            >
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {/* Upload Zone / Active File Conversion Zone */}
         {!file ? (
           <Dropzone
             onFilesSelected={handleFilesSelected}
-            accept={
-              accept ||
-              ".docx,.doc,.rtf,.odt,.html,.htm,.md,.epub,.mobi,.pdf,.pptx,.ppt,.odp,.key,.xlsx,.xls,.csv,.ods,.numbers,.tsv,.pages,.jpg,.jpeg,.png,.webp,.gif,.svg,.bmp,.tiff,.tif,.heic,.ico,.txt,.json,.xml"
-            }
-            title={`Drop your .${fromFormat} document here to convert to .${toFormat}`}
-            description={`Upload your file to start instant transfer into ${toMeta.name}`}
+            accept={accept || FORMAT_ACCEPT_MAP[fromFormat] || `.${fromFormat}`}
+            title={`Drop your .${fromFormat.toUpperCase()} file here to convert to .${toFormat.toUpperCase()}`}
+            description={`Only .${fromFormat.toUpperCase()} documents are accepted based on your selected FROM format.`}
             icon={iconNode || <UploadCloud className="w-8 h-8 text-indigo-600 dark:text-indigo-400" />}
           />
         ) : (

@@ -3,12 +3,12 @@ export interface ToolItem {
   name: string;
   slug: string;
   href: string;
-  category: "pdf" | "qr" | "convert" | "apple" | "academic";
+  category: "pdf" | "qr" | "convert" | "academic";
   description: string;
   shortDesc: string;
   iconName: string;
   badge?: string;
-  badgeType?: "in-browser" | "cloud" | "guide" | "popular";
+  badgeType?: "in-browser" | "cloud" | "popular";
   isClientOnly: boolean;
   tags: string[];
   features: string[];
@@ -18,11 +18,10 @@ export interface ToolItem {
 
 export const TOOL_CATEGORIES = [
   { id: "all", label: "All Tools", icon: "LayoutGrid" },
-  { id: "pdf", label: "PDF Suite", icon: "FileText" },
-  { id: "qr", label: "QR Generator", icon: "QrCode" },
-  { id: "convert", label: "Document Converters", icon: "ArrowLeftRight" },
-  { id: "apple", label: "Apple Pages", icon: "Apple" },
   { id: "academic", label: "Student Utilities", icon: "GraduationCap" },
+  { id: "pdf", label: "PDF Suite", icon: "FileText" },
+  { id: "convert", label: "Document Converters", icon: "ArrowLeftRight" },
+  { id: "qr", label: "QR Generator", icon: "QrCode" },
 ] as const;
 
 export const TOOLS: ToolItem[] = [
@@ -323,25 +322,25 @@ export const TOOLS: ToolItem[] = [
     ],
   },
 
-  // --- Server-Side Document Converters ---
+  // --- Document Converters ---
   {
     id: "universal-converter",
     name: "Universal Document Converter",
     slug: "convert",
     href: "/convert",
     category: "convert",
-    shortDesc: "All-in-one converter: select uploaded document type and desired target format.",
+    shortDesc: "All-in-one converter: select uploaded document type and desired target format with $0 cost.",
     description:
-      "Universal file converter dashboard. Specify your uploaded document and desired target format with high-fidelity output.",
+      "Universal file converter dashboard. Specify your uploaded document and desired target format with 100% in-browser client-side execution.",
     iconName: "ArrowLeftRight",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud",
-    isClientOnly: false,
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
     tags: ["document converter", "universal converter", "convert files", "file transfer", "converter dashboard"],
     features: [
       "Select custom source format and target format dynamically",
       "Converts Word, PDF, PowerPoint, Excel, Images, and Text",
-      "Immediate memory processing & auto-deletion guarantee",
+      "Immediate memory processing & 100% client-side privacy guarantee",
     ],
     steps: [
       { step: 1, title: "Upload Document", desc: "Select or drop any file." },
@@ -365,15 +364,15 @@ export const TOOLS: ToolItem[] = [
     description:
       "Convert Word essays, resumes, and report drafts into standardized PDF files with preserved typography, tables, and formatting.",
     iconName: "FileSpreadsheet",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud",
-    isClientOnly: false,
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
     tags: ["word to pdf", "docx to pdf", "doc to pdf", "microsoft word", "word converter"],
     features: [
-      "Supports both modern .docx and legacy .doc files",
-      "Accurate rendering of fonts, tables, margins, and headers",
-      "Temporary secure processing: files are purged immediately after conversion",
-      "Direct large-file upload support via Vercel Blob",
+      "Pure client-side parsing via Mammoth & PDF-Lib",
+      "100% free with zero API keys or external server uploads",
+      "Accurate text layout, headings, and formatting preservation",
+      "Instant vector PDF download & print preview",
     ],
     steps: [
       { step: 1, title: "Upload Word File", desc: "Drop your .docx or .doc file." },
@@ -383,7 +382,7 @@ export const TOOLS: ToolItem[] = [
     faqs: [
       {
         q: "How long is my uploaded file stored?",
-        a: "Files are converted on-the-fly in memory or temporary isolated storage and deleted immediately after download. Our automated hourly cron job cleans up any leftover temp files.",
+        a: "Files are converted on-the-fly directly inside your browser RAM. Your confidential documents never leave your computer.",
       },
     ],
   },
@@ -397,14 +396,14 @@ export const TOOLS: ToolItem[] = [
     description:
       "Turn read-only PDF worksheets, assignments, and study materials into fully editable Microsoft Word (.docx) files.",
     iconName: "FileEdit",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud",
-    isClientOnly: false,
+    badge: "In-Browser .docx",
+    badgeType: "in-browser",
+    isClientOnly: true,
     tags: ["pdf to word", "pdf to docx", "edit pdf", "convert to docx"],
     features: [
-      "Converts PDF text, paragraphs, and tables into native Word format",
-      "Clean editable output compatible with MS Word, Google Docs, and LibreOffice",
-      "Privacy-first: immediate auto-deletion",
+      "100% In-Browser PDF to editable Word (.docx) generation",
+      "Compatible with Microsoft Word, Google Docs, Apple Pages & LibreOffice",
+      "Zero server uploads: 100% local device privacy",
     ],
     steps: [
       { step: 1, title: "Select PDF", desc: "Drop your PDF file to convert." },
@@ -424,18 +423,18 @@ export const TOOLS: ToolItem[] = [
     slug: "powerpoint-to-pdf",
     href: "/powerpoint-to-pdf",
     category: "convert",
-    shortDesc: "Convert PowerPoint presentations (.ppt, .pptx) to PDF slides.",
+    shortDesc: "Convert PowerPoint presentations (.ppt, .pptx) to 16:9 PDF slides.",
     description:
-      "Convert lecture decks and group presentation slides into universal PDF handouts ready for printing or study.",
+      "Convert lecture decks and group presentation slides into universal 16:9 PDF handouts ready for printing or study.",
     iconName: "Presentation",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud",
-    isClientOnly: false,
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
     tags: ["ppt to pdf", "pptx to pdf", "powerpoint", "slides to pdf", "lecture slides"],
     features: [
       "Supports .pptx and .ppt formats",
-      "Preserves slide graphics, vector shapes, and typography",
-      "Fast, high-fidelity serverless conversion",
+      "Preserves slide titles, bullet points, and typography",
+      "Fast, 100% in-browser client-side compilation",
     ],
     steps: [
       { step: 1, title: "Upload Slides", desc: "Drop your PowerPoint .pptx or .ppt file." },
@@ -455,18 +454,18 @@ export const TOOLS: ToolItem[] = [
     slug: "excel-to-pdf",
     href: "/excel-to-pdf",
     category: "convert",
-    shortDesc: "Convert Excel spreadsheets (.xls, .xlsx) to PDF sheets.",
+    shortDesc: "Convert Excel spreadsheets (.xls, .xlsx, .csv) to landscape PDF tables.",
     description:
-      "Convert budgets, lab data tables, and spreadsheets into formatted PDF documents without messy page cutoffs.",
+      "Convert budgets, lab data tables, and spreadsheets into formatted PDF documents with headers and clear gridlines.",
     iconName: "Sheet",
-    badge: "Fast Cloud Convert",
-    badgeType: "cloud",
-    isClientOnly: false,
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
     tags: ["excel to pdf", "xlsx to pdf", "xls to pdf", "spreadsheet to pdf", "table to pdf"],
     features: [
       "Supports .xlsx, .xls, and .csv formats",
-      "Proper table pagination and column fitting",
-      "High resolution typography and gridlines",
+      "Proper table pagination, landscape layout, and gridlines",
+      "High resolution typography with zero server uploads",
     ],
     steps: [
       { step: 1, title: "Upload Spreadsheet", desc: "Drop your .xlsx or .xls file." },
@@ -476,7 +475,7 @@ export const TOOLS: ToolItem[] = [
     faqs: [
       {
         q: "Will multi-sheet workbooks be converted?",
-        a: "Yes, all active worksheets in the workbook are rendered sequentially into the PDF.",
+        a: "Yes, the worksheet rows are parsed and rendered sequentially into the PDF table.",
       },
     ],
   },
@@ -487,7 +486,7 @@ export const TOOLS: ToolItem[] = [
     name: "Pages (.pages) to PDF",
     slug: "pages-to-pdf",
     href: "/pages-to-pdf",
-    category: "apple",
+    category: "convert",
     shortDesc: "Extract the embedded preview PDF from Apple .pages files directly in browser.",
     description:
       "Apple Pages documents are packaged ZIP bundles that contain an embedded high-resolution QuickLook preview PDF. This tool extracts it instantly in your browser without uploading to any server.",
@@ -514,37 +513,6 @@ export const TOOLS: ToolItem[] = [
       {
         q: "What if my .pages file doesn't have an embedded PDF?",
         a: "Some older files or documents saved without previews may lack it. If so, our tool explains exactly how to open and export it on iCloud.com or macOS for free.",
-      },
-    ],
-  },
-  {
-    id: "pages-guide",
-    name: "Apple Pages Conversion Guide",
-    slug: "pages-guide",
-    href: "/pages-guide",
-    category: "apple",
-    shortDesc: "Honest, step-by-step guides for Pages to Word, PDF to Pages, and Windows workflows.",
-    description:
-      "Learn the genuine, official ways to convert between Apple Pages and Microsoft Word or PDF on Mac, Windows, and iPad without scam converters.",
-    iconName: "BookOpen",
-    badge: "Official Guide",
-    badgeType: "guide",
-    isClientOnly: true,
-    tags: ["pages to word", "pdf to pages", "word to pages", "pages guide", "icloud pages"],
-    features: [
-      "Verified workflows for Mac, Windows, Linux, and Chromebook users",
-      "How to use iCloud.com for free full editing and exporting to Word .docx",
-      "Explanation of native file format compatibility",
-    ],
-    steps: [
-      { step: 1, title: "Choose Your OS", desc: "Select whether you are on Mac, Windows, iPad, or Chromebook." },
-      { step: 2, title: "Follow Native Steps", desc: "Use built-in export or free iCloud.com tools." },
-      { step: 3, title: "Export Format", desc: "Save as true Word .docx or vector PDF." },
-    ],
-    faqs: [
-      {
-        q: "Can Apple Pages open Microsoft Word (.docx) directly?",
-        a: "Yes! Apple Pages opens .docx files natively without any conversion needed. Just double click or open in Pages.",
       },
     ],
   },
@@ -706,6 +674,72 @@ export const TOOLS: ToolItem[] = [
       {
         q: "Does compression happen on a server?",
         a: "No! Compression uses the HTML5 Canvas API in your browser. No image data is ever uploaded.",
+      },
+    ],
+  },
+  {
+    id: "marks-calculator",
+    name: "Exam & Internal Marks Target Calculator",
+    slug: "marks-calculator",
+    href: "/marks-calculator",
+    category: "academic",
+    shortDesc: "Calculate required semester exam marks from your internal assessment scores.",
+    description:
+      "Find out exactly how many marks you need to score in your semester final university exam to achieve Grade O (90+), A+ (80+), A (70+), or minimum pass from your internal assessment marks.",
+    iconName: "Target",
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
+    tags: ["marks calculator", "internal marks", "semester exam target", "grade target", "anna university marks", "pass mark calculator"],
+    features: [
+      "Custom internal weightage schemes (40-60, 50-50, 20-80, or custom)",
+      "Instant mark requirements for all letter grades: O, A+, A, B+, B, and Pass",
+      "Supports multiple internal assessment components (IA1, IA2, Model, Assignments)",
+      "Multi-subject semester target sheet with one-click export",
+      "Clear feasibility meters and strategic insights",
+    ],
+    steps: [
+      { step: 1, title: "Enter Internal Marks", desc: "Input your internal scores out of 20, 40, or 50." },
+      { step: 2, title: "Select Weightage Scheme", desc: "Choose your university's internal/external weightage rule." },
+      { step: 3, title: "View Required Marks", desc: "See exact final exam marks needed for Grade O, A+, A, and Pass." },
+    ],
+    faqs: [
+      {
+        q: "How does the calculation work?",
+        a: "It combines your scaled internal marks and external exam marks according to your university's official weightage formula to determine the exact raw marks needed in the final exam.",
+      },
+    ],
+  },
+  {
+    id: "resume-builder",
+    name: "ATS Student Resume Builder",
+    slug: "resume-builder",
+    href: "/resume-builder",
+    category: "academic",
+    shortDesc: "Create clean, ATS-friendly resumes for internships & placements with instant PDF export.",
+    description:
+      "100% free, no-login student resume builder optimized for applicant tracking systems (ATS), campus placement drives, and tech internships. Export clean, single-page PDFs instantly.",
+    iconName: "FileSpreadsheet",
+    badge: "100% In-Browser",
+    badgeType: "in-browser",
+    isClientOnly: true,
+    tags: ["resume builder", "ats resume", "student resume", "placement resume", "cv maker", "latex style resume"],
+    features: [
+      "Clean, 1-page ATS-optimized layouts without formatting traps",
+      "Sections for Projects, Skills, Education, Internships, and Achievements",
+      "Pre-loaded with high-impact student sample profiles and action verbs",
+      "Live real-time preview and instant browser print/PDF export with zero watermarks",
+      "100% private: your data is saved only in your local browser storage",
+    ],
+    steps: [
+      { step: 1, title: "Enter Details", desc: "Fill in your education, technical skills, projects, and experiences." },
+      { step: 2, title: "Preview & Customize", desc: "Check live preview and pick your preferred typography style." },
+      { step: 3, title: "Export PDF", desc: "Click Download PDF to get a clean, placement-ready resume." },
+    ],
+    faqs: [
+      {
+        q: "Are there any watermarks or signup required?",
+        a: "None! It is 100% free, requires zero signup, has no watermarks, and runs entirely in your browser.",
       },
     ],
   },

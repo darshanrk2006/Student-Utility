@@ -343,7 +343,7 @@ export default function QrPage() {
                   className="w-full py-3.5 px-4 rounded-2xl bg-indigo-600 hover:bg-indigo-700 disabled:opacity-50 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 shadow-md shadow-indigo-500/20 transition-all hover:scale-102 active:scale-98"
                 >
                   <Download className="w-4 h-4" />
-                  PNG (Raster)
+                  PNG
                 </button>
 
                 <button
@@ -352,7 +352,7 @@ export default function QrPage() {
                   className="w-full py-3.5 px-4 rounded-2xl bg-slate-900 hover:bg-slate-800 dark:bg-slate-800 dark:hover:bg-slate-700 disabled:opacity-50 text-white font-bold text-xs sm:text-sm flex items-center justify-center gap-2 transition-all hover:scale-102 active:scale-98"
                 >
                   <Download className="w-4 h-4" />
-                  SVG (Vector)
+                  SVG
                 </button>
               </div>
 

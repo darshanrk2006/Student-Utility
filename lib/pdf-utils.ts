@@ -320,7 +320,7 @@ export async function getPdfJs() {
 }
 
 /**
- * Extract text from PDF client-side
+ * Extract text from PDF client-side with full line-break and structure preservation
  */
 export async function extractTextFromPdf(
   file: File
@@ -337,12 +337,48 @@ export async function extractTextFromPdf(
   for (let i = 1; i <= pageCount; i++) {
     const page = await pdf.getPage(i);
     const content = await page.getTextContent();
-    const pageText = content.items
-      .map((item: any) => item.str || "")
-      .join(" ")
-      .replace(/\s+/g, " ")
-      .trim();
 
+    let lastY: number | null = null;
+    const pageLines: string[] = [];
+    let currentLine = "";
+
+    for (const rawItem of content.items) {
+      const item = rawItem as any;
+      if (typeof item.str !== "string") continue;
+
+      const currentY = Array.isArray(item.transform) ? item.transform[5] : null;
+
+      // When vertical Y position changes significantly, start a new line
+      if (lastY !== null && currentY !== null && Math.abs(currentY - lastY) > 5) {
+        if (currentLine.trim()) {
+          pageLines.push(currentLine.trimEnd());
+        }
+        currentLine = item.str;
+      } else {
+        // Same line: add space if needed
+        if (currentLine && !currentLine.endsWith(" ") && !item.str.startsWith(" ")) {
+          currentLine += " " + item.str;
+        } else {
+          currentLine += item.str;
+        }
+      }
+
+      if (item.hasEOL) {
+        if (currentLine.trim()) {
+          pageLines.push(currentLine.trimEnd());
+        }
+        currentLine = "";
+        lastY = null;
+      } else {
+        lastY = currentY;
+      }
+    }
+
+    if (currentLine.trim()) {
+      pageLines.push(currentLine.trimEnd());
+    }
+
+    const pageText = pageLines.join("\n");
     pages.push({ pageNumber: i, text: pageText });
     fullText += `--- Page ${i} ---\n${pageText}\n\n`;
   }

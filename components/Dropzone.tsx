@@ -44,6 +44,32 @@ export function Dropzone({
       return;
     }
 
+    // Strict accept validation
+    if (accept) {
+      const acceptRules = accept.split(",").map((s) => s.trim().toLowerCase());
+      const invalidFile = filesArray.find((f) => {
+        const name = f.name.toLowerCase();
+        const type = (f.type || "").toLowerCase();
+        return !acceptRules.some((rule) => {
+          if (rule.startsWith(".")) {
+            return name.endsWith(rule);
+          }
+          if (rule.endsWith("/*")) {
+            const prefix = rule.slice(0, -2);
+            return type.startsWith(prefix);
+          }
+          return type === rule;
+        });
+      });
+
+      if (invalidFile) {
+        setErrorMsg(
+          `"${invalidFile.name}" is not a supported file type. Expected format: ${accept}`
+        );
+        return;
+      }
+    }
+
     onFilesSelected(multiple ? filesArray : [filesArray[0]]);
   };
 
