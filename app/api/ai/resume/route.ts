@@ -40,8 +40,8 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Call Google Gemini 2.0 Flash / 1.5 Flash endpoint
-    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`;
+    // Call Google Gemini 3.8 Flash endpoint
+    const endpoint = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3.8-flash:generateContent?key=${apiKey}`;
 
     const body: any = {
       contents: [
