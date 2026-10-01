@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://studenttoolkit.vercel.app"),
+  metadataBase: new URL("https://studentutility.vercel.app"),
   title: {
     default: "StudentToolkit — Free, No-Login Utility Hub for Students",
     template: "%s | StudentToolkit",
@@ -39,7 +39,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://studenttoolkit.vercel.app",
+    url: "https://studentutility.vercel.app",
     title: "StudentToolkit — Free, No-Login Utility Hub for Students",
     description:
       "All-in-one free student utilities: PDF tools, QR generator, Word converters, Apple Pages preview extractor, GPA calculator & citations. Fast, mobile-first, and private.",

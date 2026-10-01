@@ -2,7 +2,7 @@ import { MetadataRoute } from "next";
 import { TOOLS } from "@/lib/tools-data";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = "https://studenttoolkit.vercel.app";
+  const baseUrl = "https://studentutility.vercel.app";
 
   const staticRoutes: MetadataRoute.Sitemap = [
     {
