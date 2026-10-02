@@ -492,9 +492,9 @@ export default function ResumeBuilderPage() {
     graduationYear: "",
     gpa: "",
     coursework: "",
-    languages: "TypeScript, JavaScript, Python, C++, Java, SQL",
-    frameworks: "React, Next.js, Node.js, Express, Tailwind CSS",
-    tools: "Git, Docker, AWS, Linux, PostgreSQL, Redis",
+    languages: "",
+    frameworks: "",
+    tools: "",
     hasExperience: false,
     company: "",
     experienceRole: "",
@@ -3514,7 +3514,7 @@ export default function ResumeBuilderPage() {
                       { num: 6, label: "Honors", valid: isStep6Valid },
                     ].map((s) => {
                       const isCurrent = wizardStep === s.num;
-                      const isCompleted = s.valid;
+                      const isCompleted = s.num < wizardStep && s.valid;
                       const canJump = s.num <= wizardStep;
 
                       return (
@@ -3539,7 +3539,7 @@ export default function ResumeBuilderPage() {
                           }`}
                         >
                           <span className="text-[10px] flex items-center gap-1 font-bold">
-                            {isCompleted && !isCurrent ? (
+                            {isCompleted ? (
                               <Check className="w-3 h-3 text-emerald-600 dark:text-emerald-400" />
                             ) : (
                               `Step ${s.num}`
