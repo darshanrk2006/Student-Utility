@@ -510,13 +510,21 @@ export default function ResumeBuilderPage() {
 
   const printRef = useRef<HTMLDivElement>(null);
 
+  // Real-time Field Validation Helpers
+  const isValidEmail = (email: string) => /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/.test(email.trim());
+  const isValidPhone = (phone: string) => {
+    const digits = phone.replace(/\D/g, "");
+    return digits.length >= 7 && digits.length <= 15 && /^[0-9+() -]+$/.test(phone.trim());
+  };
+  const isValidLocation = (location: string) => location.trim().length >= 2;
+
   // Wizard Validation Per Step
   const isStep1Valid = Boolean(
-    wizardData.fullName.trim() &&
-    wizardData.targetRole.trim() &&
-    wizardData.email.trim() &&
-    wizardData.phone.trim() &&
-    wizardData.location.trim()
+    wizardData.fullName.trim().length >= 2 &&
+    wizardData.targetRole.trim().length >= 2 &&
+    isValidEmail(wizardData.email) &&
+    isValidPhone(wizardData.phone) &&
+    isValidLocation(wizardData.location)
   );
 
   const isStep2Valid = Boolean(
@@ -566,11 +574,15 @@ export default function ResumeBuilderPage() {
     switch (wizardStep) {
       case 1: {
         const missing: string[] = [];
-        if (!wizardData.fullName.trim()) missing.push("Full Name");
-        if (!wizardData.targetRole.trim()) missing.push("Target Role Title");
-        if (!wizardData.email.trim()) missing.push("Email");
-        if (!wizardData.phone.trim()) missing.push("Phone");
-        if (!wizardData.location.trim()) missing.push("Location");
+        if (!wizardData.fullName.trim() || wizardData.fullName.trim().length < 2) missing.push("Full Name");
+        if (!wizardData.targetRole.trim() || wizardData.targetRole.trim().length < 2) missing.push("Target Role Title");
+        if (!wizardData.email.trim() || !isValidEmail(wizardData.email)) {
+          missing.push(wizardData.email.trim() ? "Valid Email (e.g. name@domain.com)" : "Email Address");
+        }
+        if (!wizardData.phone.trim() || !isValidPhone(wizardData.phone)) {
+          missing.push(wizardData.phone.trim() ? "Valid Phone (digits only, min 7 digits)" : "Phone Number");
+        }
+        if (!wizardData.location.trim() || !isValidLocation(wizardData.location)) missing.push("Location");
         const total = 5;
         const filled = total - missing.length;
         return { filled, total, isValid: isStep1Valid, missing };
@@ -888,9 +900,14 @@ export default function ResumeBuilderPage() {
 
   // Personal Field updater
   const handlePersonalChange = (field: keyof ResumeData["personal"], val: string) => {
+    let cleanVal = val;
+    if (field === "phone") {
+      // Only permit numbers and standard phone formatting characters
+      cleanVal = val.replace(/[^0-9+() -]/g, "");
+    }
     setResume((prev) => ({
       ...prev,
-      personal: { ...prev.personal, [field]: val },
+      personal: { ...prev.personal, [field]: cleanVal },
     }));
   };
 
@@ -1942,39 +1959,88 @@ export default function ResumeBuilderPage() {
 
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
-                          Email Address *
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                            Email Address *
+                          </label>
+                          {resume.personal.email.trim() && (
+                            <span className={`text-[9px] font-bold ${isValidEmail(resume.personal.email) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                              {isValidEmail(resume.personal.email) ? "✓ Valid" : "✕ Invalid"}
+                            </span>
+                          )}
+                        </div>
                         <input
                           type="email"
                           value={resume.personal.email}
-                          onChange={(e) => handlePersonalChange("email", e.target.value)}
+                          onChange={(e) => handlePersonalChange("email", e.target.value.trim())}
                           placeholder="alex@college.edu"
-                          className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
+                            resume.personal.email.trim() && !isValidEmail(resume.personal.email)
+                              ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 ring-1 ring-rose-400/40"
+                              : isValidEmail(resume.personal.email)
+                              ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
+                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+                          }`}
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
-                          Phone Number
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                            Phone Number <span className="text-[9px] text-slate-400 font-normal">(Digits Only)</span>
+                          </label>
+                          {resume.personal.phone.trim() && (
+                            <span className={`text-[9px] font-bold ${isValidPhone(resume.personal.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                              {isValidPhone(resume.personal.phone) ? "✓ Valid" : "✕ Digits only"}
+                            </span>
+                          )}
+                        </div>
                         <input
-                          type="text"
+                          type="tel"
+                          inputMode="tel"
                           value={resume.personal.phone}
-                          onChange={(e) => handlePersonalChange("phone", e.target.value)}
+                          onKeyDown={(e) => {
+                            // Block any alphabetic letters from being typed
+                            if (!/[0-9+() -]/.test(e.key) && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                              e.preventDefault();
+                            }
+                          }}
+                          onChange={(e) => {
+                            const filtered = e.target.value.replace(/[^0-9+() -]/g, "");
+                            handlePersonalChange("phone", filtered);
+                          }}
                           placeholder="+1 (555) 000-0000"
-                          className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
+                            resume.personal.phone.trim() && !isValidPhone(resume.personal.phone)
+                              ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 ring-1 ring-rose-400/40"
+                              : isValidPhone(resume.personal.phone)
+                              ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
+                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+                          }`}
                         />
                       </div>
                       <div>
-                        <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
-                          Location (City, State / Country)
-                        </label>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
+                            Location (City, State / Country)
+                          </label>
+                          {resume.personal.location.trim() && (
+                            <span className={`text-[9px] font-bold ${isValidLocation(resume.personal.location) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                              {isValidLocation(resume.personal.location) ? "✓ Valid" : "✕ Too short"}
+                            </span>
+                          )}
+                        </div>
                         <input
                           type="text"
                           value={resume.personal.location}
                           onChange={(e) => handlePersonalChange("location", e.target.value)}
                           placeholder="Boston, MA"
-                          className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
+                          className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
+                            resume.personal.location.trim() && !isValidLocation(resume.personal.location)
+                              ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 ring-1 ring-rose-400/40"
+                              : isValidLocation(resume.personal.location)
+                              ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
+                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+                          }`}
                         />
                       </div>
                     </div>
@@ -3560,55 +3626,97 @@ export default function ResumeBuilderPage() {
 
                       <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
-                            Email <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
-                          </label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                              Email <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
+                            </label>
+                            {wizardData.email.trim() && (
+                              <span className={`text-[9px] font-bold ${isValidEmail(wizardData.email) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                                {isValidEmail(wizardData.email) ? "✓ Valid" : "✕ Invalid"}
+                              </span>
+                            )}
+                          </div>
                           <input
                             type="email"
                             value={wizardData.email}
-                            onChange={(e) => setWizardData({ ...wizardData, email: e.target.value })}
+                            onChange={(e) => setWizardData({ ...wizardData, email: e.target.value.trim() })}
                             placeholder="alex@college.edu"
                             className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                              wizardAttemptedNext && !wizardData.email.trim()
-                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400"
-                                : wizardData.email.trim()
-                                ? "border-emerald-300 dark:border-emerald-800 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100"
+                              (wizardAttemptedNext && !wizardData.email.trim()) || (wizardData.email.trim() && !isValidEmail(wizardData.email))
+                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
+                                : isValidEmail(wizardData.email)
+                                ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
                                 : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                             }`}
                           />
+                          {wizardData.email.trim() && !isValidEmail(wizardData.email) && (
+                            <p className="text-[9px] text-rose-500 font-semibold mt-1">
+                              Enter valid email (e.g. name@university.edu)
+                            </p>
+                          )}
                         </div>
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
-                            Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
-                          </label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                              Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Digits Only)</span>
+                            </label>
+                            {wizardData.phone.trim() && (
+                              <span className={`text-[9px] font-bold ${isValidPhone(wizardData.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                                {isValidPhone(wizardData.phone) ? "✓ Valid" : "✕ Digits only"}
+                              </span>
+                            )}
+                          </div>
                           <input
-                            type="text"
+                            type="tel"
+                            inputMode="tel"
                             value={wizardData.phone}
-                            onChange={(e) => setWizardData({ ...wizardData, phone: e.target.value })}
+                            onKeyDown={(e) => {
+                              // Block any alphabetic letters from being typed
+                              if (!/[0-9+() -]/.test(e.key) && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
+                                e.preventDefault();
+                              }
+                            }}
+                            onChange={(e) => {
+                              // Strict filter: numbers and standard phone formatting only
+                              const filtered = e.target.value.replace(/[^0-9+() -]/g, "");
+                              setWizardData({ ...wizardData, phone: filtered });
+                            }}
                             placeholder="+1 (555) 000-0000"
                             className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                              wizardAttemptedNext && !wizardData.phone.trim()
-                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400"
-                                : wizardData.phone.trim()
-                                ? "border-emerald-300 dark:border-emerald-800 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100"
+                              (wizardAttemptedNext && !wizardData.phone.trim()) || (wizardData.phone.trim() && !isValidPhone(wizardData.phone))
+                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
+                                : isValidPhone(wizardData.phone)
+                                ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
                                 : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                             }`}
                           />
+                          {wizardData.phone.trim() && !isValidPhone(wizardData.phone) && (
+                            <p className="text-[9px] text-rose-500 font-semibold mt-1">
+                              Only phone numbers allowed (min 7-15 digits)
+                            </p>
+                          )}
                         </div>
                         <div>
-                          <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400 block mb-1">
-                            Location <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
-                          </label>
+                          <div className="flex items-center justify-between mb-1">
+                            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                              Location <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
+                            </label>
+                            {wizardData.location.trim() && (
+                              <span className={`text-[9px] font-bold ${isValidLocation(wizardData.location) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                                {isValidLocation(wizardData.location) ? "✓ Valid" : "✕ Too short"}
+                              </span>
+                            )}
+                          </div>
                           <input
                             type="text"
                             value={wizardData.location}
                             onChange={(e) => setWizardData({ ...wizardData, location: e.target.value })}
                             placeholder="Boston, MA"
                             className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                              wizardAttemptedNext && !wizardData.location.trim()
-                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400"
-                                : wizardData.location.trim()
-                                ? "border-emerald-300 dark:border-emerald-800 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100"
+                              wizardAttemptedNext && (!wizardData.location.trim() || !isValidLocation(wizardData.location))
+                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
+                                : isValidLocation(wizardData.location)
+                                ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
                                 : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
                             }`}
                           />
