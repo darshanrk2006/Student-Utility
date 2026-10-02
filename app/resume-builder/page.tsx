@@ -1958,7 +1958,7 @@ export default function ResumeBuilderPage() {
                       </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
@@ -1987,7 +1987,7 @@ export default function ResumeBuilderPage() {
                       <div>
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
-                            Phone Number <span className="text-[9px] text-slate-400 font-normal">(With Country Code)</span>
+                            Phone Number
                           </label>
                           {resume.personal.phone.trim() && (
                             <span className={`text-[9px] font-bold ${isValidPhone(resume.personal.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
@@ -2008,6 +2008,9 @@ export default function ResumeBuilderPage() {
                           </p>
                         )}
                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
@@ -2033,9 +2036,6 @@ export default function ResumeBuilderPage() {
                           }`}
                         />
                       </div>
-                    </div>
-
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                       <div>
                         <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
                           LinkedIn Profile URL
@@ -2048,6 +2048,9 @@ export default function ResumeBuilderPage() {
                           className="w-full p-2.5 rounded-xl border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-xs font-semibold text-slate-900 dark:text-slate-100 focus:ring-2 focus:ring-indigo-500/20 focus:border-indigo-500"
                         />
                       </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                       <div>
                         <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400 block mb-1">
                           GitHub / Portfolio URL
@@ -3614,7 +3617,7 @@ export default function ResumeBuilderPage() {
                         </div>
                       </div>
 
-                      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
                         <div>
                           <div className="flex items-center justify-between mb-1">
                             <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
@@ -3648,7 +3651,7 @@ export default function ResumeBuilderPage() {
                         <div>
                           <div className="flex items-center justify-between mb-1">
                             <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                              Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(With Country Code)</span>
+                              Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
                             </label>
                             {wizardData.phone.trim() && (
                               <span className={`text-[9px] font-bold ${isValidPhone(wizardData.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
@@ -3669,31 +3672,32 @@ export default function ResumeBuilderPage() {
                             </p>
                           )}
                         </div>
-                        <div>
-                          <div className="flex items-center justify-between mb-1">
-                            <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                              Location <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
-                            </label>
-                            {wizardData.location.trim() && (
-                              <span className={`text-[9px] font-bold ${isValidLocation(wizardData.location) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
-                                {isValidLocation(wizardData.location) ? "✓ Valid" : "✕ Too short"}
-                              </span>
-                            )}
-                          </div>
-                          <input
-                            type="text"
-                            value={wizardData.location}
-                            onChange={(e) => setWizardData({ ...wizardData, location: e.target.value })}
-                            placeholder="Boston, MA"
-                            className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                              wizardAttemptedNext && (!wizardData.location.trim() || !isValidLocation(wizardData.location))
-                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
-                                : isValidLocation(wizardData.location)
-                                ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
-                                : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
-                            }`}
-                          />
+                      </div>
+
+                      <div>
+                        <div className="flex items-center justify-between mb-1">
+                          <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
+                            Location <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Required)</span>
+                          </label>
+                          {wizardData.location.trim() && (
+                            <span className={`text-[9px] font-bold ${isValidLocation(wizardData.location) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
+                              {isValidLocation(wizardData.location) ? "✓ Valid" : "✕ Too short"}
+                            </span>
+                          )}
                         </div>
+                        <input
+                          type="text"
+                          value={wizardData.location}
+                          onChange={(e) => setWizardData({ ...wizardData, location: e.target.value })}
+                          placeholder="Boston, MA"
+                          className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
+                            wizardAttemptedNext && (!wizardData.location.trim() || !isValidLocation(wizardData.location))
+                              ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
+                              : isValidLocation(wizardData.location)
+                              ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
+                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
+                          }`}
+                        />
                       </div>
 
                       {/* Step 1 Error Feedback */}
