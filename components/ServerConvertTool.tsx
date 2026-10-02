@@ -519,16 +519,16 @@ export const VALID_TARGETS: Record<string, string[]> = {
   pages: ["docx", "pdf", "doc", "txt", "rtf"],
 
   // Images
-  jpg: ["png", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
-  jpeg: ["png", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
-  png: ["jpg", "pdf", "webp", "heic", "gif", "svg", "bmp", "tiff", "ico"],
-  webp: ["png", "jpg", "pdf", "gif", "bmp"],
-  gif: ["png", "jpg", "pdf", "webp"],
-  svg: ["png", "jpg", "pdf", "webp"],
-  bmp: ["png", "jpg", "pdf", "webp"],
-  tiff: ["pdf", "png", "jpg", "webp"],
-  heic: ["jpg", "png", "pdf", "webp"],
-  ico: ["png", "jpg"],
+  jpg: ["png", "pdf", "webp", "gif", "bmp", "tiff", "ico", "svg"],
+  jpeg: ["png", "pdf", "webp", "gif", "bmp", "tiff", "ico", "svg"],
+  png: ["jpg", "pdf", "webp", "gif", "bmp", "tiff", "ico", "svg"],
+  webp: ["png", "jpg", "pdf", "gif", "bmp", "tiff", "ico", "svg"],
+  gif: ["png", "jpg", "pdf", "webp", "bmp", "svg"],
+  svg: ["png", "jpg", "pdf", "webp", "gif", "bmp"],
+  bmp: ["png", "jpg", "pdf", "webp", "gif", "svg"],
+  tiff: ["pdf", "png", "jpg", "webp", "gif", "bmp"],
+  heic: ["jpg", "png", "pdf", "webp", "gif"],
+  ico: ["png", "jpg", "webp", "pdf"],
 
   // Text & Data
   txt: ["pdf", "docx", "pages", "html", "rtf"],
