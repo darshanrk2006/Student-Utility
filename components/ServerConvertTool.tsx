@@ -6,6 +6,7 @@ import { Dropzone } from "@/components/Dropzone";
 import { ProgressCard } from "@/components/ProgressCard";
 import { TOOLS } from "@/lib/tools-data";
 import { executeDocumentConversion } from "@/lib/client-converter";
+import { validateFormatMagicBytes } from "@/lib/magic-bytes";
 import { downloadBlob, formatBytes } from "@/lib/utils";
 import {
   ArrowRight,
@@ -721,11 +722,11 @@ export function ServerConvertTool({
     return defaultFromFormat;
   };
 
-  const handleFilesSelected = (files: File[]) => {
+  const handleFilesSelected = async (files: File[]) => {
     if (!files[0]) return;
     const uploadedFile = files[0];
 
-    // Strict validation: Only accept file if it matches the selected FROM format
+    // 1. Strict extension matching
     if (!isFileMatchingFormat(uploadedFile, fromFormat)) {
       const detected = detectFormat(uploadedFile.name);
       setFile(null);
@@ -734,6 +735,20 @@ export function ServerConvertTool({
         `Selected source format is .${fromFormat.toUpperCase()}, but you uploaded "${uploadedFile.name}". Please upload a .${fromFormat.toUpperCase()} document, or select .${detected.toUpperCase()} in the FROM panel.`
       );
       return;
+    }
+
+    // 2. Binary Magic Bytes Validation
+    try {
+      const headerSlice = await uploadedFile.slice(0, 32).arrayBuffer();
+      const validation = validateFormatMagicBytes(new Uint8Array(headerSlice), fromFormat);
+      if (!validation.valid) {
+        setFile(null);
+        setStatus("error");
+        setErrorMessage(validation.message || `File header mismatch.`);
+        return;
+      }
+    } catch {
+      // Allow fallback if slice fails
     }
 
     setFile(uploadedFile);

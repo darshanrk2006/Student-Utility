@@ -4,6 +4,7 @@ import { parseExcelToRows, convertTableToPdf, parsePptxToSlides, convertSlidesTo
 import { extractTextFromPdf, renderPdfPagesToImages, imagesToPdf } from "./pdf-utils";
 import { generateDocxBlobFromPages } from "./docx-builder";
 import { extractPagesPreviewPdf, createZipArchive } from "./jszip-utils";
+import { validateFormatMagicBytes } from "./magic-bytes";
 import {
   encodeImageDataToGif,
   encodeImageDataToBmp,
@@ -118,36 +119,42 @@ async function convertTextToPdf(text: string, title: string): Promise<Blob> {
 }
 
 /**
- * Decodes any input image into an HTML5 Canvas with dimensions & ImageData
+ * Decodes any input image into an HTML5 Canvas using pure binary ObjectURL
+ * Never converts binary images to UTF-8 strings.
  */
 async function decodeImageToCanvas(file: File): Promise<{
   canvas: HTMLCanvasElement;
   ctx: CanvasRenderingContext2D;
   width: number;
   height: number;
-  dataUrl: string;
+  blobUrl: string;
 }> {
   return new Promise((resolve, reject) => {
-    const reader = new FileReader();
-    reader.onload = (e) => {
-      const dataUrl = e.target?.result as string;
-      const img = new Image();
-      img.onload = () => {
-        const width = Math.max(1, img.naturalWidth || 800);
-        const height = Math.max(1, img.naturalHeight || 600);
-        const canvas = document.createElement("canvas");
-        canvas.width = width;
-        canvas.height = height;
-        const ctx = canvas.getContext("2d", { willReadFrequently: true });
-        if (!ctx) return reject(new Error("Could not initialize 2D canvas context."));
-        ctx.drawImage(img, 0, 0);
-        resolve({ canvas, ctx, width, height, dataUrl });
-      };
-      img.onerror = () => reject(new Error(`Could not decode image "${file.name}". Please verify it is a valid image file.`));
-      img.src = dataUrl;
+    const blobUrl = URL.createObjectURL(file);
+    const img = new Image();
+    img.onload = () => {
+      const width = Math.max(1, img.naturalWidth || 800);
+      const height = Math.max(1, img.naturalHeight || 600);
+      const canvas = document.createElement("canvas");
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) {
+        URL.revokeObjectURL(blobUrl);
+        return reject(new Error("Could not initialize 2D canvas context."));
+      }
+      ctx.drawImage(img, 0, 0);
+      resolve({ canvas, ctx, width, height, blobUrl });
     };
-    reader.onerror = reject;
-    reader.readAsDataURL(file);
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl);
+      reject(
+        new Error(
+          `Could not decode image "${file.name}". Please verify it is a valid, uncorrupted image file.`
+        )
+      );
+    };
+    img.src = blobUrl;
   });
 }
 
@@ -160,94 +167,98 @@ async function convertImageFileToTarget(
   targetExt: string
 ): Promise<{ blob: Blob; mime: string }> {
   const ext = targetExt.toLowerCase().replace(".", "");
-  const { canvas, ctx, width, height, dataUrl } = await decodeImageToCanvas(file);
+  const { canvas, ctx, width, height, blobUrl } = await decodeImageToCanvas(file);
 
-  // 1. GIF Image (.gif) - Genuine GIF89a with LZW compression & color quantization
-  if (ext === "gif") {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const gifBytes = encodeImageDataToGif(imageData);
-    return {
-      blob: new Blob([gifBytes as unknown as BlobPart], { type: "image/gif" }),
-      mime: "image/gif",
-    };
-  }
+  try {
+    // 1. GIF Image (.gif) - Genuine GIF89a with LZW compression & color quantization
+    if (ext === "gif") {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const gifBytes = encodeImageDataToGif(imageData);
+      return {
+        blob: new Blob([gifBytes as unknown as BlobPart], { type: "image/gif" }),
+        mime: "image/gif",
+      };
+    }
 
-  // 2. Windows Bitmap (.bmp) - Genuine 24-bit DIB BMP
-  if (ext === "bmp") {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const bmpBytes = encodeImageDataToBmp(imageData);
-    return {
-      blob: new Blob([bmpBytes as unknown as BlobPart], { type: "image/bmp" }),
-      mime: "image/bmp",
-    };
-  }
+    // 2. Windows Bitmap (.bmp) - Genuine 24-bit DIB BMP
+    if (ext === "bmp") {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const bmpBytes = encodeImageDataToBmp(imageData);
+      return {
+        blob: new Blob([bmpBytes as unknown as BlobPart], { type: "image/bmp" }),
+        mime: "image/bmp",
+      };
+    }
 
-  // 3. Windows Icon (.ico) - Genuine ICO directory with PNG payload
-  if (ext === "ico") {
-    const pngBlob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("ICO canvas conversion failed"))), "image/png");
+    // 3. Windows Icon (.ico) - Genuine ICO directory with PNG payload
+    if (ext === "ico") {
+      const pngBlob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("ICO canvas conversion failed"))), "image/png");
+      });
+      const icoBytes = await encodePngToIco(pngBlob, width, height);
+      return {
+        blob: new Blob([icoBytes as unknown as BlobPart], { type: "image/x-icon" }),
+        mime: "image/x-icon",
+      };
+    }
+
+    // 4. TIFF Image (.tiff / .tif) - Genuine TIFF 6.0 baseline RGB
+    if (ext === "tiff" || ext === "tif") {
+      const imageData = ctx.getImageData(0, 0, width, height);
+      const tiffBytes = encodeImageDataToTiff(imageData);
+      return {
+        blob: new Blob([tiffBytes as unknown as BlobPart], { type: "image/tiff" }),
+        mime: "image/tiff",
+      };
+    }
+
+    // 5. SVG Vector (.svg) - Scalable Vector Graphic wrapper
+    if (ext === "svg") {
+      const pngDataUrl = canvas.toDataURL("image/png");
+      const svgContent = encodeImageToSvg(pngDataUrl, width, height);
+      return {
+        blob: new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" }),
+        mime: "image/svg+xml",
+      };
+    }
+
+    // 6. PNG Image (.png)
+    if (ext === "png") {
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("PNG conversion failed"))), "image/png");
+      });
+      return { blob, mime: "image/png" };
+    }
+
+    // 7. WebP Image (.webp)
+    if (ext === "webp") {
+      const blob = await new Promise<Blob>((resolve, reject) => {
+        canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("WebP conversion failed"))), "image/webp", 0.94);
+      });
+      return { blob, mime: "image/webp" };
+    }
+
+    // 8. JPEG Image (.jpg / .jpeg) - Blends over white for transparency
+    const jpgCanvas = document.createElement("canvas");
+    jpgCanvas.width = width;
+    jpgCanvas.height = height;
+    const jpgCtx = jpgCanvas.getContext("2d")!;
+    jpgCtx.fillStyle = "#ffffff";
+    jpgCtx.fillRect(0, 0, width, height);
+    jpgCtx.drawImage(canvas, 0, 0);
+
+    const jpgBlob = await new Promise<Blob>((resolve, reject) => {
+      jpgCanvas.toBlob((b) => (b ? resolve(b) : reject(new Error("JPEG conversion failed"))), "image/jpeg", 0.94);
     });
-    const icoBytes = await encodePngToIco(pngBlob, width, height);
-    return {
-      blob: new Blob([icoBytes as unknown as BlobPart], { type: "image/x-icon" }),
-      mime: "image/x-icon",
-    };
+    return { blob: jpgBlob, mime: "image/jpeg" };
+  } finally {
+    URL.revokeObjectURL(blobUrl);
   }
-
-  // 4. TIFF Image (.tiff / .tif) - Genuine TIFF 6.0 baseline RGB
-  if (ext === "tiff" || ext === "tif") {
-    const imageData = ctx.getImageData(0, 0, width, height);
-    const tiffBytes = encodeImageDataToTiff(imageData);
-    return {
-      blob: new Blob([tiffBytes as unknown as BlobPart], { type: "image/tiff" }),
-      mime: "image/tiff",
-    };
-  }
-
-  // 5. SVG Vector (.svg) - Scalable Vector Graphic wrapper
-  if (ext === "svg") {
-    const svgContent = encodeImageToSvg(dataUrl, width, height);
-    return {
-      blob: new Blob([svgContent], { type: "image/svg+xml;charset=utf-8" }),
-      mime: "image/svg+xml",
-    };
-  }
-
-  // 6. PNG Image (.png)
-  if (ext === "png") {
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("PNG conversion failed"))), "image/png");
-    });
-    return { blob, mime: "image/png" };
-  }
-
-  // 7. WebP Image (.webp)
-  if (ext === "webp") {
-    const blob = await new Promise<Blob>((resolve, reject) => {
-      canvas.toBlob((b) => (b ? resolve(b) : reject(new Error("WebP conversion failed"))), "image/webp", 0.94);
-    });
-    return { blob, mime: "image/webp" };
-  }
-
-  // 8. JPEG Image (.jpg / .jpeg) - Blends over white for transparency
-  const jpgCanvas = document.createElement("canvas");
-  jpgCanvas.width = width;
-  jpgCanvas.height = height;
-  const jpgCtx = jpgCanvas.getContext("2d")!;
-  jpgCtx.fillStyle = "#ffffff";
-  jpgCtx.fillRect(0, 0, width, height);
-  jpgCtx.drawImage(canvas, 0, 0);
-
-  const jpgBlob = await new Promise<Blob>((resolve, reject) => {
-    jpgCanvas.toBlob((b) => (b ? resolve(b) : reject(new Error("JPEG conversion failed"))), "image/jpeg", 0.94);
-  });
-  return { blob: jpgBlob, mime: "image/jpeg" };
 }
 
 /**
- * 100% In-Browser Document Conversion Engine
- * Executes all document, spreadsheet, presentation, image, and text transformations
- * with zero server calls, zero external API keys, and 100% device privacy.
+ * 100% Pure Binary In-Browser Document Conversion Engine
+ * Never converts binary file buffers into UTF-8 strings.
  */
 export async function executeDocumentConversion({
   file,
@@ -260,9 +271,16 @@ export async function executeDocumentConversion({
   const baseName = file.name.replace(/\.[^/.]+$/, "");
   const outputFilename = `${baseName}.${to === "jpeg" ? "jpg" : to}`;
 
-  if (onProgress) onProgress(15, `Reading ${file.name}...`);
+  if (onProgress) onProgress(15, `Inspecting ${file.name}...`);
 
   try {
+    // 0. Binary Magic Bytes Validation
+    const headerSlice = await file.slice(0, 32).arrayBuffer();
+    const validation = validateFormatMagicBytes(new Uint8Array(headerSlice), from);
+    if (!validation.valid) {
+      throw new Error(validation.message || `File content does not match .${from.toUpperCase()} format.`);
+    }
+
     // =============================================================
     // 1. PDF -> Word (.docx)
     // =============================================================
@@ -347,7 +365,7 @@ export async function executeDocumentConversion({
         const rawTextResult = await mammoth.extractRawText({ arrayBuffer });
         extractedText = rawTextResult.value;
       } catch {
-        extractedText = await file.text().catch(() => `Document: ${file.name}`);
+        extractedText = "Converted Word Document";
       }
 
       if (!extractedText.trim()) {
@@ -434,7 +452,6 @@ export async function executeDocumentConversion({
       }
 
       if (to === "json") {
-        // Convert rows to JSON array of objects or 2D array
         const headers = rows[0] || [];
         const jsonData = rows.slice(1).map((r) => {
           const obj: Record<string, string> = {};
@@ -484,9 +501,7 @@ export async function executeDocumentConversion({
           if (onProgress) onProgress(100, "Extracted QuickLook PDF!");
           return { filename: outputFilename, blob: res.pdfBlob };
         }
-        const text = await file.text().catch(() => "Apple Pages Document");
-        const cleanText = text.replace(/[^\x20-\x7E\n\r\t]/g, " ").trim();
-        const pdfBlob = await convertTextToPdf(cleanText || "Apple Pages Document Preview", file.name);
+        const pdfBlob = await convertTextToPdf("Apple Pages Document Preview", file.name);
         return { filename: outputFilename, blob: pdfBlob };
       }
 
@@ -516,23 +531,27 @@ export async function executeDocumentConversion({
 
     if (isImageSource && to === "pdf") {
       if (onProgress) onProgress(45, "Encoding image into PDF document...");
-      const { dataUrl, width, height } = await decodeImageToCanvas(file);
+      const { blobUrl, width, height } = await decodeImageToCanvas(file);
 
-      const bytes = await imagesToPdf(
-        [
-          {
-            dataUrl,
-            width,
-            height,
-            type: "image/png",
-          },
-        ],
-        { orientation: "auto", margin: 18, pageSize: "a4" }
-      );
+      try {
+        const bytes = await imagesToPdf(
+          [
+            {
+              dataUrl: blobUrl,
+              width,
+              height,
+              type: "image/png",
+            },
+          ],
+          { orientation: "auto", margin: 18, pageSize: "a4" }
+        );
 
-      const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
-      if (onProgress) onProgress(100, "Done!");
-      return { filename: outputFilename, blob };
+        const blob = new Blob([bytes as unknown as BlobPart], { type: "application/pdf" });
+        if (onProgress) onProgress(100, "Done!");
+        return { filename: outputFilename, blob };
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
     }
 
     // =============================================================
@@ -602,52 +621,55 @@ export async function executeDocumentConversion({
     // =============================================================
     // 11. Text / Markdown / HTML / RTF / ODT / E-Books
     // =============================================================
-    if (onProgress) onProgress(50, "Formatting text content...");
-    const rawContent = await file.text().catch(() => `Document: ${file.name}`);
+    if (from === "txt" || from === "md" || from === "html" || from === "rtf") {
+      if (onProgress) onProgress(50, "Formatting text content...");
+      const rawContent = await file.text();
 
-    if (to === "pdf") {
-      const blob = await convertTextToPdf(rawContent, file.name);
-      return { filename: outputFilename, blob };
-    }
+      if (to === "pdf") {
+        const blob = await convertTextToPdf(rawContent, file.name);
+        return { filename: outputFilename, blob };
+      }
 
-    if (to === "docx") {
-      const blob = await generateDocxBlobFromPages([{ pageNumber: 1, text: rawContent }]);
-      return { filename: outputFilename, blob };
-    }
+      if (to === "docx") {
+        const blob = await generateDocxBlobFromPages([{ pageNumber: 1, text: rawContent }]);
+        return { filename: outputFilename, blob };
+      }
 
-    if (to === "rtf") {
-      const blob = generateRtfBlob(rawContent, baseName);
-      return { filename: outputFilename, blob };
-    }
+      if (to === "rtf") {
+        const blob = generateRtfBlob(rawContent, baseName);
+        return { filename: outputFilename, blob };
+      }
 
-    if (to === "odt") {
-      const blob = await generateOdtBlob(rawContent, baseName);
-      return { filename: outputFilename, blob };
-    }
+      if (to === "odt") {
+        const odtBlob = await generateOdtBlob(rawContent, baseName);
+        return { filename: outputFilename, blob: odtBlob };
+      }
 
-    if (to === "epub") {
-      const blob = await generateEpubBlob(rawContent, baseName);
-      return { filename: outputFilename, blob };
-    }
+      if (to === "epub") {
+        const blob = await generateEpubBlob(rawContent, baseName);
+        return { filename: outputFilename, blob };
+      }
 
-    if (to === "html") {
-      const paragraphs = rawContent.split("\n").map((l) => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`).join("");
-      const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>${baseName}</title><style>body{font-family:sans-serif;line-height:1.6;margin:40px;color:#1e293b;}</style></head><body><h1>${baseName}</h1>${paragraphs}</body></html>`;
-      return { filename: outputFilename, blob: new Blob([html], { type: "text/html;charset=utf-8" }) };
-    }
+      if (to === "html") {
+        const paragraphs = rawContent.split("\n").map((l) => `<p>${l.replace(/&/g, "&amp;").replace(/</g, "&lt;")}</p>`).join("");
+        const html = `<!DOCTYPE html><html><head><meta charset="utf-8"/><title>${baseName}</title><style>body{font-family:sans-serif;line-height:1.6;margin:40px;color:#1e293b;}</style></head><body><h1>${baseName}</h1>${paragraphs}</body></html>`;
+        return { filename: outputFilename, blob: new Blob([html], { type: "text/html;charset=utf-8" }) };
+      }
 
-    if (to === "md") {
+      if (to === "md") {
+        return {
+          filename: outputFilename,
+          blob: new Blob([`# ${baseName}\n\n${rawContent}`], { type: "text/markdown;charset=utf-8" }),
+        };
+      }
+
       return {
         filename: outputFilename,
-        blob: new Blob([`# ${baseName}\n\n${rawContent}`], { type: "text/markdown;charset=utf-8" }),
+        blob: new Blob([rawContent], { type: "text/plain;charset=utf-8" }),
       };
     }
 
-    // Default to plain text
-    return {
-      filename: outputFilename,
-      blob: new Blob([rawContent], { type: "text/plain;charset=utf-8" }),
-    };
+    throw new Error(`Direct conversion from .${from.toUpperCase()} to .${to.toUpperCase()} is not supported.`);
   } catch (err: any) {
     console.error("Client conversion engine error:", err);
     throw new Error(
