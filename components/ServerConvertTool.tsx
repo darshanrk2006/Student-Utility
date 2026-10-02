@@ -883,25 +883,6 @@ export function ServerConvertTool({
   return (
     <ToolLayout tool={tool}>
       <div className="space-y-6 max-w-5xl mx-auto">
-        {/* Top 100% In-Browser Trust Banner */}
-        <div className="p-4 rounded-3xl bg-indigo-50/70 dark:bg-indigo-950/30 border border-indigo-200/80 dark:border-indigo-900/60 flex items-center justify-between gap-4">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-2xl bg-indigo-600 text-white flex items-center justify-center font-bold shadow-md shadow-indigo-500/20">
-              <ShieldCheck className="w-5 h-5" />
-            </div>
-            <div>
-              <h4 className="text-xs font-black text-slate-900 dark:text-slate-100 uppercase tracking-wider">
-                100% In-Browser Document Engine ($0 Forever)
-              </h4>
-              <p className="text-[11px] text-slate-600 dark:text-slate-400 mt-0.5">
-                Converts Word, PDF, Excel, PowerPoint, Images, Text, and Code locally inside your device memory with zero API keys or external server uploads.
-              </p>
-            </div>
-          </div>
-          <span className="hidden sm:inline-flex text-[10px] font-bold px-2.5 py-1 rounded-full bg-emerald-100 dark:bg-emerald-950 text-emerald-700 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 shrink-0">
-            No API Keys Needed
-          </span>
-        </div>
 
         {/* Quick Conversion Preset Shortcuts */}
         <div className="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-4 sm:p-5 shadow-sm space-y-3">
