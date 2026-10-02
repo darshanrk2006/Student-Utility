@@ -22,7 +22,8 @@ export function downloadBlob(blob: Blob, filename: string) {
   document.body.appendChild(a);
   a.click();
   document.body.removeChild(a);
-  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  // Delay revocation to ensure OS file writing completes cleanly
+  setTimeout(() => URL.revokeObjectURL(url), 60000);
 }
 
 export function downloadDataUrl(dataUrl: string, filename: string) {
