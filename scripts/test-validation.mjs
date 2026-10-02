@@ -45,13 +45,30 @@ function testValidation() {
   }
   console.log("✅ PASS: Phone sanitization stripped letters properly.");
 
-  console.log("\nTesting Valid Data:");
+  console.log("\nTesting Country Dial Code Phones (India +91, UK +44, US +1):");
+  const phones = [
+    { country: "India (+91)", phone: "+91 98765 43210" },
+    { country: "United States (+1)", phone: "+1 (555) 234-5678" },
+    { country: "United Kingdom (+44)", phone: "+44 7911 123456" },
+    { country: "United Arab Emirates (+971)", phone: "+971 50 123 4567" },
+  ];
+
+  for (const p of phones) {
+    const valid = isValidPhone(p.phone);
+    console.log(`Checking ${p.country}: ${p.phone} -> Valid: ${valid}`);
+    if (!valid) {
+      throw new Error(`FAIL: Phone for ${p.country} should be valid!`);
+    }
+  }
+  console.log("✅ PASS: All country code phone formats validated successfully.");
+
+  console.log("\nTesting Valid Complete Step 1 Data (India +91 format):");
   const validData = {
     fullName: "Alex Chen",
     targetRole: "Software Engineering & Full Stack",
     email: "alex@university.edu",
-    phone: "+1 (555) 234-5678",
-    location: "Boston, MA"
+    phone: "+91 98765 43210",
+    location: "Bengaluru, India"
   };
 
   const isValidAllowed = validateStep1(validData);

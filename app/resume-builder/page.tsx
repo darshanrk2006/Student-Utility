@@ -48,6 +48,7 @@ import {
   Compass,
 } from "lucide-react";
 import confetti from "canvas-confetti";
+import { CountryPhoneInput } from "@/components/CountryPhoneInput";
 import {
   ROLE_PRESETS,
   ACTION_VERBS,
@@ -1986,7 +1987,7 @@ export default function ResumeBuilderPage() {
                       <div>
                         <div className="flex items-center justify-between mb-1">
                           <label className="text-[11px] font-bold text-slate-600 dark:text-slate-400">
-                            Phone Number <span className="text-[9px] text-slate-400 font-normal">(Digits Only)</span>
+                            Phone Number <span className="text-[9px] text-slate-400 font-normal">(With Country Code)</span>
                           </label>
                           {resume.personal.phone.trim() && (
                             <span className={`text-[9px] font-bold ${isValidPhone(resume.personal.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
@@ -1994,29 +1995,18 @@ export default function ResumeBuilderPage() {
                             </span>
                           )}
                         </div>
-                        <input
-                          type="tel"
-                          inputMode="tel"
+                        <CountryPhoneInput
                           value={resume.personal.phone}
-                          onKeyDown={(e) => {
-                            // Block any alphabetic letters from being typed
-                            if (!/[0-9+() -]/.test(e.key) && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-                              e.preventDefault();
-                            }
-                          }}
-                          onChange={(e) => {
-                            const filtered = e.target.value.replace(/[^0-9+() -]/g, "");
-                            handlePersonalChange("phone", filtered);
-                          }}
-                          placeholder="+1 (555) 000-0000"
-                          className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                            resume.personal.phone.trim() && !isValidPhone(resume.personal.phone)
-                              ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 ring-1 ring-rose-400/40"
-                              : isValidPhone(resume.personal.phone)
-                              ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
-                              : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
-                          }`}
+                          onChange={(val) => handlePersonalChange("phone", val)}
+                          isError={Boolean(resume.personal.phone.trim() && !isValidPhone(resume.personal.phone))}
+                          isValid={Boolean(resume.personal.phone.trim() && isValidPhone(resume.personal.phone))}
+                          placeholder="98765 43210"
                         />
+                        {resume.personal.phone.trim() && !isValidPhone(resume.personal.phone) && (
+                          <p className="text-[9px] text-rose-500 font-semibold mt-1">
+                            Enter valid phone digits (7-15 digits)
+                          </p>
+                        )}
                       </div>
                       <div>
                         <div className="flex items-center justify-between mb-1">
@@ -3658,7 +3648,7 @@ export default function ResumeBuilderPage() {
                         <div>
                           <div className="flex items-center justify-between mb-1">
                             <label className="text-[10px] font-bold text-slate-500 dark:text-slate-400">
-                              Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(Digits Only)</span>
+                              Phone <span className="text-rose-500">*</span> <span className="text-[9px] text-rose-500/80 font-normal">(With Country Code)</span>
                             </label>
                             {wizardData.phone.trim() && (
                               <span className={`text-[9px] font-bold ${isValidPhone(wizardData.phone) ? "text-emerald-600 dark:text-emerald-400" : "text-rose-500"}`}>
@@ -3666,29 +3656,12 @@ export default function ResumeBuilderPage() {
                               </span>
                             )}
                           </div>
-                          <input
-                            type="tel"
-                            inputMode="tel"
+                          <CountryPhoneInput
                             value={wizardData.phone}
-                            onKeyDown={(e) => {
-                              // Block any alphabetic letters from being typed
-                              if (!/[0-9+() -]/.test(e.key) && e.key.length === 1 && !e.ctrlKey && !e.metaKey) {
-                                e.preventDefault();
-                              }
-                            }}
-                            onChange={(e) => {
-                              // Strict filter: numbers and standard phone formatting only
-                              const filtered = e.target.value.replace(/[^0-9+() -]/g, "");
-                              setWizardData({ ...wizardData, phone: filtered });
-                            }}
-                            placeholder="+1 (555) 000-0000"
-                            className={`w-full p-2.5 rounded-xl border text-xs font-semibold focus:outline-none transition-colors ${
-                              (wizardAttemptedNext && !wizardData.phone.trim()) || (wizardData.phone.trim() && !isValidPhone(wizardData.phone))
-                                ? "border-rose-400 bg-rose-50/40 dark:bg-rose-950/30 text-rose-900 dark:text-rose-100 placeholder:text-rose-400 ring-1 ring-rose-400/40"
-                                : isValidPhone(wizardData.phone)
-                                ? "border-emerald-400 dark:border-emerald-700 bg-emerald-50/20 dark:bg-emerald-950/10 text-slate-900 dark:text-slate-100 ring-1 ring-emerald-400/30"
-                                : "border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100"
-                            }`}
+                            onChange={(val) => setWizardData({ ...wizardData, phone: val })}
+                            isError={Boolean((wizardAttemptedNext && !wizardData.phone.trim()) || (wizardData.phone.trim() && !isValidPhone(wizardData.phone)))}
+                            isValid={Boolean(wizardData.phone.trim() && isValidPhone(wizardData.phone))}
+                            placeholder="98765 43210"
                           />
                           {wizardData.phone.trim() && !isValidPhone(wizardData.phone) && (
                             <p className="text-[9px] text-rose-500 font-semibold mt-1">
